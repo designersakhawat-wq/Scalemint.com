@@ -1,0 +1,49 @@
+[
+  {
+    "id": "pkg_1",
+    "name": "Starter",
+    "price": "$1999",
+    "description": "Perfect for small businesses looking to establish a digital presence.",
+    "isPopular": true,
+    "order": 1,
+    "isActive": true,
+    "features": [
+      "Brand Identity (Logo & Guidelines)",
+      "Basic Website (Up to 5 Pages)",
+      "1 Month SEO Setup",
+      "Social Media Templates"
+    ]
+  },
+  {
+    "id": "pkg_2",
+    "name": "Professional",
+    "price": "$2,499",
+    "description": "Comprehensive solutions for growing brands needing a competitive edge.",
+    "isPopular": false,
+    "order": 2,
+    "isActive": true,
+    "features": [
+      "Advanced Brand Identity",
+      "E-Commerce or Custom Web App",
+      "3 Months SEO & Content Strategy",
+      "Google & Meta Ads Setup",
+      "Priority Support"
+    ]
+  },
+  {
+    "id": "pkg_3",
+    "name": "Enterprise",
+    "price": "Custom",
+    "description": "Tailored full-scale digital transformation for large corporations.",
+    "isPopular": false,
+    "order": 3,
+    "isActive": true,
+    "features": [
+      "Full-Scale Rebranding",
+      "Complex Web Platform Development",
+      "Ongoing Marketing Management",
+      "Dedicated Account Manager",
+      "24/7 Premium Support"
+    ]
+  }
+]

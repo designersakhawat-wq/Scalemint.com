@@ -1,0 +1,42 @@
+[
+  {
+    "id": "faq_1",
+    "question": "Do You Only Work With Car & Auto Repair Shops?",
+    "answer": "No, while we have experience in that niche, we work with a wide variety of industries including e-commerce, corporate, startups, and local businesses.",
+    "category": "general",
+    "order": 1,
+    "isActive": true
+  },
+  {
+    "id": "faq_2",
+    "question": "Do You Work With Shops Across Europe?",
+    "answer": "Yes, we are a global agency. We work with clients from North America, Europe, Asia, and beyond.",
+    "category": "general",
+    "order": 2,
+    "isActive": true
+  },
+  {
+    "id": "faq_3",
+    "question": "How Soon Will I See Results?",
+    "answer": "Depending on the service, you can see initial results within the first month. SEO and organic growth typically take 3-6 months for significant impact.",
+    "category": "general",
+    "order": 3,
+    "isActive": true
+  },
+  {
+    "id": "faq_4",
+    "question": "Which Package Is Right For Me?",
+    "answer": "It depends on your goals and current business stage. We recommend booking a consultation with us so we can tailor a package to your specific needs.",
+    "category": "general",
+    "order": 4,
+    "isActive": true
+  },
+  {
+    "id": "faq_5",
+    "question": "Do You Handle Everything For Me?",
+    "answer": "Yes! We offer end-to-end digital marketing and design solutions, so you can focus on running your business while we handle the creative and technical work.",
+    "category": "general",
+    "order": 5,
+    "isActive": true
+  }
+]

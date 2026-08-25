@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-navy: #050B35;
+  --color-brand-royal: #071A73;
+  --color-brand-blue: #102CC9;
+  --color-brand-electric: #1B43FF;
+  
+  --color-pastel-blue: #E8F0FE;
+  --color-pastel-cream: #FFF4E6;
+  --color-pastel-green: #E6F4EA;
+  --color-pastel-pink: #FCE8E6;
+  --color-pastel-gray: #F8F9FA;
+  
+  --font-sans: var(--font-plus-jakarta-sans);
+  --font-serif: var(--font-playfair-display);
+}
+
+@layer utilities {
+  .hero-pattern {
+    background-color: var(--color-brand-navy);
+    background-image: 
+      linear-gradient(135deg, rgba(255,255,255,0.05) 25%, transparent 25%), 
+      linear-gradient(225deg, rgba(255,255,255,0.05) 25%, transparent 25%), 
+      linear-gradient(45deg, rgba(255,255,255,0.05) 25%, transparent 25%), 
+      linear-gradient(315deg, rgba(255,255,255,0.05) 25%, var(--color-brand-navy) 25%);
+    background-position: 10px 0, 10px 0, 0 0, 0 0;
+    background-size: 20px 20px;
+    background-repeat: repeat;
+  }
+  
+  .animate-marquee {
+    animation: marquee 35s linear infinite;
+  }
+
+  .animate-marquee-reverse {
+    animation: marquee-reverse 35s linear infinite;
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-reverse {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
