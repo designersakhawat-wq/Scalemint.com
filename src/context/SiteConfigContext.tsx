@@ -287,37 +287,54 @@ export const defaultSettings: SiteSettings = {
   },
 };
 
-export function sanitizeImageUrl(url?: string | null): string {
-  if (!url || typeof url !== "string") return "";
+export function sanitizeImageUrl(url?: string | null, fallback = ""): string {
+  if (!url || typeof url !== "string") return fallback;
   let clean = url.trim();
+
+  // Expired / temporary browser session blob URLs cannot be persisted or displayed across sessions
+  if (clean.startsWith("blob:")) {
+    return fallback;
+  }
+
   // Strip prepended domain on data:image URLs (e.g., https://scaleminte.com/data:image/...)
   const dataIdx = clean.indexOf("data:image/");
   if (dataIdx > 0) {
     clean = clean.substring(dataIdx);
   }
+
+  // Validate clean URL
+  if (!clean || clean === "/" || clean === "null" || clean === "undefined" || clean.length < 5) {
+    return fallback;
+  }
+
   return clean;
 }
 
-const LOCAL_STORAGE_KEY = "scaleminte_site_settings_cache_v5";
+const LOCAL_STORAGE_KEY = "scaleminte_site_settings_cache_v6";
 
 function mergeSettingsHelper(remoteData: any): SiteSettings {
   if (!remoteData || typeof remoteData !== "object") return defaultSettings;
 
-  const rawCarousel = Array.isArray(remoteData.images?.heroCarousel)
+  const defaultSlides = defaultSettings.images.heroCarousel;
+  const rawCarousel = Array.isArray(remoteData.images?.heroCarousel) && remoteData.images.heroCarousel.length > 0
     ? remoteData.images.heroCarousel
-    : defaultSettings.images.heroCarousel;
+    : defaultSlides;
 
-  const cleanedCarousel = rawCarousel.map((item: any) => ({
-    ...item,
-    url: sanitizeImageUrl(item.url),
-  }));
+  const cleanedCarousel = rawCarousel.map((item: any, idx: number) => {
+    const fallbackUrl = defaultSlides[idx % defaultSlides.length]?.url || "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80";
+    return {
+      ...item,
+      url: sanitizeImageUrl(item.url, fallbackUrl),
+    };
+  });
 
   const rawIndustry = remoteData.images?.industryCards || defaultSettings.images.industryCards;
   const cleanedIndustry: any = {};
   for (const [k, v] of Object.entries(rawIndustry)) {
+    const defaultUrl = (defaultSettings.images.industryCards as any)?.[k]?.url || "/images/startup.jpg";
     cleanedIndustry[k] = {
       ...(v as any),
-      url: sanitizeImageUrl((v as any)?.url),
+      url: sanitizeImageUrl((v as any)?.url, defaultUrl),
     };
   }
 

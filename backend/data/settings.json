@@ -238,37 +238,31 @@
       {
         "id": "c1",
         "title": "Educational Design",
-        "url": "http://localhost:5000/uploads/amazon-listing-images-electric-shaver-hero6-1787655047677-584812793.jpg",
+        "url": "https://images.unsplash.com/photo-1501504905252-473c47e087f8?auto=format&fit=crop&w=800&q=80",
         "position": "center"
       },
       {
         "id": "c2",
         "title": "SaaS Dashboard",
-        "url": "http://localhost:5000/uploads/amazon-listing-images-electric-shaver-hero8-1787655051873-390143225.jpg",
+        "url": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80",
         "position": "center"
       },
       {
         "id": "c3",
         "title": "E-Commerce App",
-        "url": "http://localhost:5000/uploads/amazon-listing-images-electric-shaver-hero3-1787655035563-354113738.jpg",
+        "url": "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=800&q=80",
         "position": "center"
       },
       {
         "id": "c4",
         "title": "Corporate Identity",
-        "url": "http://localhost:5000/uploads/amazon-listing-images-electric-shaver-hero4-1787655039524-404898576.jpg",
+        "url": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80",
         "position": "center"
       },
       {
         "id": "c5",
         "title": "Social Media Platform",
-        "url": "http://localhost:5000/uploads/amazon-listing-images-electric-shaver-hero5-1787655043500-774615909.jpg",
-        "position": "center"
-      },
-      {
-        "id": "c_1787655057706",
-        "title": "New Project Showcase",
-        "url": "http://localhost:5000/uploads/amazon-listing-images-electric-shaver-hero9-1787655062581-284677329.jpg",
+        "url": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=800&q=80",
         "position": "center"
       }
     ],

@@ -16,6 +16,28 @@ function getSegments(params: { route?: string[] } | undefined): string[] {
   return params?.route || [];
 }
 
+function cleanSettingsData(settings: any) {
+  if (!settings) return defaultSettings;
+  const merged = { ...defaultSettings, ...settings };
+  const defaultCarousel = defaultSettings.images.heroCarousel;
+
+  if (merged.images && Array.isArray(merged.images.heroCarousel)) {
+    merged.images.heroCarousel = merged.images.heroCarousel.map((item: any, idx: number) => {
+      let u = (item.url || "").trim();
+      if (!u || u.startsWith("blob:") || u.includes("localhost:5000") || u.includes("localhost:3000") || u.length < 5) {
+        u = defaultCarousel[idx % defaultCarousel.length]?.url || "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80";
+      }
+      return {
+        ...item,
+        url: u,
+      };
+    });
+  } else if (merged.images) {
+    merged.images.heroCarousel = defaultCarousel;
+  }
+  return merged;
+}
+
 export async function GET(
   req: NextRequest,
   context: { params: Promise<{ route: string[] }> }
@@ -154,7 +176,8 @@ export async function GET(
 
   // Settings / Site Config
   if (resource === "settings" || resource === "site-config") {
-    const settings = getCollection("settings.json", defaultSettings);
+    const raw = getCollection("settings.json", defaultSettings);
+    const settings = cleanSettingsData(raw);
     return NextResponse.json({ success: true, data: settings });
   }
 
@@ -387,7 +410,7 @@ export async function PUT(
   // Settings
   if (resource === "settings" || resource === "site-config") {
     const existing = getCollection("settings.json", defaultSettings);
-    const updated = { ...existing, ...body };
+    const updated = cleanSettingsData({ ...existing, ...body });
     saveCollection("settings.json", updated);
     return NextResponse.json({ success: true, data: updated });
   }
