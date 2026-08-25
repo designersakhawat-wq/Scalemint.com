@@ -88,27 +88,76 @@ if (fs.existsSync(dataDir)) {
   console.log('✓ Synced data directories across standalone and backend');
 }
 
-// 6. Sync out directory if it exists (for static hosting in public_html)
+// 6. Fully rebuild and sync out/ directory for direct static hosting in public_html
 const outDir = path.join(rootDir, 'out');
-if (fs.existsSync(outDir)) {
-  const outStaticChunks = path.join(outDir, '_next', 'static', 'chunks');
-  if (fs.existsSync(outStaticChunks)) {
-    const allCss = fs.readdirSync(outStaticChunks).filter((f) => f.endsWith('.css'));
-    if (allCss.length > 0) {
-      const sourceCss = path.join(outStaticChunks, allCss[0]);
-      for (const legacyName of legacyCssNames) {
-        const destCss = path.join(outStaticChunks, legacyName);
-        if (!fs.existsSync(destCss)) {
-          fs.copyFileSync(sourceCss, destCss);
+if (!fs.existsSync(outDir)) {
+  fs.mkdirSync(outDir, { recursive: true });
+}
+
+// 6a. Copy public folder to out/
+if (fs.existsSync(publicDir)) {
+  copyRecursiveSync(publicDir, outDir);
+}
+
+// 6b. Copy .next/static to out/_next/static
+if (fs.existsSync(nextStatic)) {
+  const outNextStatic = path.join(outDir, '_next', 'static');
+  copyRecursiveSync(nextStatic, outNextStatic);
+  console.log('✓ Synced .next/static -> out/_next/static');
+}
+
+// 6c. Copy compiled HTML pages from .next/server/app to out/
+const serverAppDir = path.join(rootDir, '.next', 'server', 'app');
+if (fs.existsSync(serverAppDir)) {
+  function copyHtmlFiles(srcDir, targetDir) {
+    if (!fs.existsSync(srcDir)) return;
+    if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir, { recursive: true });
+
+    for (const item of fs.readdirSync(srcDir)) {
+      if (item === 'favicon.ico' || item === 'api' || item === '_global-error') continue;
+      const srcItem = path.join(srcDir, item);
+      const stat = fs.statSync(srcItem);
+      if (stat.isDirectory()) {
+        if (!item.startsWith('_') || item === '_not-found') {
+          copyHtmlFiles(srcItem, path.join(targetDir, item));
         }
+      } else if (item.endsWith('.html')) {
+        const destItem = path.join(targetDir, item);
+        try {
+          fs.copyFileSync(srcItem, destItem);
+        } catch {}
       }
-      console.log('✓ Created legacy CSS fallback aliases in out/_next/static/chunks');
     }
   }
-  const outHtaccess = path.join(outDir, '.htaccess');
-  fs.copyFileSync(path.join(rootDir, '.htaccess'), outHtaccess);
-  console.log('✓ Synced .htaccess -> out/.htaccess');
+
+  copyHtmlFiles(serverAppDir, outDir);
+
+  // 404 fallback
+  const notFoundHtml = path.join(serverAppDir, '_not-found.html');
+  if (fs.existsSync(notFoundHtml)) {
+    fs.copyFileSync(notFoundHtml, path.join(outDir, '404.html'));
+  }
+  console.log('✓ Copied compiled HTML pages from .next/server/app -> out/');
 }
+
+// 6d. Create CSS fallback aliases in out/_next/static/chunks
+const outStaticChunks = path.join(outDir, '_next', 'static', 'chunks');
+if (fs.existsSync(outStaticChunks)) {
+  const allCss = fs.readdirSync(outStaticChunks).filter((f) => f.endsWith('.css'));
+  if (allCss.length > 0) {
+    const sourceCss = path.join(outStaticChunks, allCss[0]);
+    for (const legacyName of legacyCssNames) {
+      const destCss = path.join(outStaticChunks, legacyName);
+      fs.copyFileSync(sourceCss, destCss);
+    }
+    console.log('✓ Created legacy CSS fallback aliases in out/_next/static/chunks');
+  }
+}
+
+// 6e. Copy .htaccess to out/
+const outHtaccess = path.join(outDir, '.htaccess');
+fs.copyFileSync(path.join(rootDir, '.htaccess'), outHtaccess);
+console.log('✓ Synced .htaccess -> out/.htaccess');
 
 // 7. Copy server.js & .htaccess & start.cjs to standalone
 const filesToSync = ['server.js', '.htaccess', 'start.cjs'];
@@ -121,3 +170,4 @@ for (const file of filesToSync) {
 }
 
 console.log('> All production assets successfully synchronized!');
+
