@@ -17,25 +17,50 @@ function getSegments(params: { route?: string[] } | undefined): string[] {
 }
 
 function cleanSettingsData(settings: any) {
-  if (!settings) return defaultSettings;
-  const merged = { ...defaultSettings, ...settings };
-  const defaultCarousel = defaultSettings.images.heroCarousel;
+  try {
+    if (!settings || typeof settings !== "object") return defaultSettings;
+    const defaultImages = defaultSettings.images;
+    const defaultCarousel = defaultImages.heroCarousel;
 
-  if (merged.images && Array.isArray(merged.images.heroCarousel)) {
-    merged.images.heroCarousel = merged.images.heroCarousel.map((item: any, idx: number) => {
-      let u = (item.url || "").trim();
+    const rawCarousel = Array.isArray(settings.images?.heroCarousel) && settings.images.heroCarousel.length > 0
+      ? settings.images.heroCarousel
+      : defaultCarousel;
+
+    const cleanedCarousel = rawCarousel.map((item: any, idx: number) => {
+      let u = (item?.url || "").trim();
+      const fallbackUrl = defaultCarousel[idx % defaultCarousel.length]?.url || "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80";
       if (!u || u.startsWith("blob:") || u.includes("localhost:5000") || u.includes("localhost:3000") || u.length < 5) {
-        u = defaultCarousel[idx % defaultCarousel.length]?.url || "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80";
+        u = fallbackUrl;
       }
       return {
-        ...item,
+        id: item?.id || `c_${idx + 1}`,
+        title: item?.title || defaultCarousel[idx % defaultCarousel.length]?.title || `Project #${idx + 1}`,
         url: u,
+        position: item?.position || "center",
       };
     });
-  } else if (merged.images) {
-    merged.images.heroCarousel = defaultCarousel;
+
+    const rawIndustry = settings.images?.industryCards || defaultImages.industryCards;
+    const rawLogos = Array.isArray(settings.images?.clientLogos) ? settings.images.clientLogos : defaultImages.clientLogos;
+
+    return {
+      ...defaultSettings,
+      ...settings,
+      images: {
+        ...defaultImages,
+        ...(settings.images || {}),
+        heroCarousel: cleanedCarousel,
+        industryCards: {
+          ...defaultImages.industryCards,
+          ...(rawIndustry || {}),
+        },
+        clientLogos: rawLogos,
+      },
+    };
+  } catch (err) {
+    console.error("Error in cleanSettingsData:", err);
+    return defaultSettings;
   }
-  return merged;
 }
 
 export async function GET(
