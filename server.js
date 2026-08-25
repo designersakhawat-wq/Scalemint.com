@@ -10,7 +10,7 @@ if (!process.env.PORT) {
 const standaloneServer = path.join(__dirname, '.next', 'standalone', 'server.js');
 
 if (fs.existsSync(standaloneServer)) {
-  console.log(`> Scalemint: Launching Standalone Server on ${process.env.HOSTNAME}:${process.env.PORT}`);
+  console.log(`> Scalemint: Launching Standalone Server on ${process.env.HOSTNAME}:${process.env.PORT} [build: 2026-08-26T00:12]`);
   require(standaloneServer);
 } else {
   console.log(`> Scalemint: Standalone not found, executing next start on ${process.env.PORT}`);
