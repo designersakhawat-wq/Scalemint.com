@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from "react";
 import { sanitizeImageUrl } from "@/context/SiteConfigContext";
+import { API_BASE_URL } from "@/lib/api";
 
 interface ImageUploadFieldProps {
   label?: string;
@@ -110,12 +111,36 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
 
     try {
       setIsOptimizing(true);
+      // 1. Upload to server filesystem for permanent storage
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch(`${API_BASE_URL}/uploads`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.data?.url) {
+          onChange(data.data.url);
+          return;
+        }
+      }
+
+      // 2. Client-side canvas compression fallback
       const optimized = await optimizeImageFile(file);
       if (optimized) {
         onChange(sanitizeImageUrl(optimized));
       }
     } catch (err) {
-      console.error("Optimization failed:", err);
+      console.error("Upload/Optimization failed:", err);
+      try {
+        const optimized = await optimizeImageFile(file);
+        if (optimized) {
+          onChange(sanitizeImageUrl(optimized));
+        }
+      } catch {}
     } finally {
       setIsOptimizing(false);
       if (fileInputRef.current) {
@@ -261,12 +286,12 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
           <div className="flex gap-2">
             <input
               type="text"
-              value={cleanUrl}
-              onChange={(e) => onChange(sanitizeImageUrl(e.target.value))}
+              value={value || ""}
+              onChange={(e) => onChange(e.target.value)}
               placeholder={placeholder}
               className="flex-1 px-3 py-2 bg-black/40 border border-white/10 rounded-xl text-white text-xs font-mono focus:border-brand-electric outline-none"
             />
-            {cleanUrl && (
+            {value && (
               <button
                 type="button"
                 onClick={handleRemove}

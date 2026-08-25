@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import fs from "fs";
+import path from "path";
 import { getCollection, saveCollection } from "@/lib/serverStore";
 import {
   initialServices,
@@ -61,6 +63,18 @@ function cleanSettingsData(settings: any) {
         ...defaultSettings.footerConfig,
         ...(settings.footerConfig || {}),
       },
+      carouselConfig: {
+        ...defaultSettings.carouselConfig,
+        ...(settings.carouselConfig || {}),
+      },
+      faqSection: {
+        ...defaultSettings.faqSection,
+        ...(settings.faqSection || {}),
+      },
+      legalPages: {
+        ...defaultSettings.legalPages,
+        ...(settings.legalPages || {}),
+      },
       images: {
         ...defaultImages,
         ...(settings.images || {}),
@@ -95,6 +109,33 @@ export async function GET(
       timestamp: new Date().toISOString(),
       service: "Scaleminte Next.js Native API v1",
     });
+  }
+
+  // Uploads Stream
+  if (resource === "uploads" && idOrSlug) {
+    try {
+      const uploadDir = path.join(process.cwd(), "public", "uploads");
+      const filePath = path.join(uploadDir, idOrSlug);
+      if (fs.existsSync(filePath)) {
+        const fileBuffer = fs.readFileSync(filePath);
+        const ext = path.extname(idOrSlug).toLowerCase();
+        const contentType =
+          ext === ".png"
+            ? "image/png"
+            : ext === ".svg"
+            ? "image/svg+xml"
+            : ext === ".webp"
+            ? "image/webp"
+            : "image/jpeg";
+        return new NextResponse(fileBuffer, {
+          headers: {
+            "Content-Type": contentType,
+            "Cache-Control": "public, max-age=31536000, immutable",
+          },
+        });
+      }
+    } catch {}
+    return NextResponse.json({ success: false, message: "Image not found" }, { status: 404 });
   }
 
   // Dashboard Stats
@@ -292,18 +333,39 @@ export async function POST(
         return NextResponse.json({ success: false, message: "No file provided" }, { status: 400 });
       }
 
-      // Convert to base64 data URL for instant standalone reliability
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
-      const mimeType = file.type || "image/png";
-      const base64Url = `data:${mimeType};base64,${buffer.toString("base64")}`;
+
+      // Clean file extension & safe filename
+      const originalExt = path.extname(file.name) || "";
+      const ext = originalExt ? originalExt.toLowerCase() : file.type?.includes("png") ? ".png" : file.type?.includes("svg") ? ".svg" : file.type?.includes("webp") ? ".webp" : ".jpg";
+      const safeName = `img_${Date.now()}_${Math.random().toString(36).substring(2, 7)}${ext}`;
+
+      // 1. Ensure public/uploads directory exists
+      const uploadDir = path.join(process.cwd(), "public", "uploads");
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+      fs.writeFileSync(path.join(uploadDir, safeName), buffer);
+
+      // 2. Also write to standalone directory if running in standalone
+      const standaloneUploadDir = path.join(process.cwd(), ".next", "standalone", "public", "uploads");
+      if (fs.existsSync(path.dirname(standaloneUploadDir))) {
+        if (!fs.existsSync(standaloneUploadDir)) {
+          fs.mkdirSync(standaloneUploadDir, { recursive: true });
+        }
+        fs.writeFileSync(path.join(standaloneUploadDir, safeName), buffer);
+      }
+
+      const fileUrl = `/uploads/${safeName}`;
 
       return NextResponse.json({
         success: true,
         message: "File uploaded successfully",
-        data: { url: base64Url, name: file.name, size: file.size },
+        data: { url: fileUrl, name: safeName, size: file.size },
       });
     } catch (err) {
+      console.error("Upload error:", err);
       return NextResponse.json({ success: false, message: "Upload failed" }, { status: 500 });
     }
   }
