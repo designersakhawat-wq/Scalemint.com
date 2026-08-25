@@ -287,14 +287,45 @@ export const defaultSettings: SiteSettings = {
   },
 };
 
+export function sanitizeImageUrl(url?: string | null): string {
+  if (!url || typeof url !== "string") return "";
+  let clean = url.trim();
+  // Strip prepended domain on data:image URLs (e.g., https://scaleminte.com/data:image/...)
+  const dataIdx = clean.indexOf("data:image/");
+  if (dataIdx > 0) {
+    clean = clean.substring(dataIdx);
+  }
+  return clean;
+}
+
 const LOCAL_STORAGE_KEY = "scaleminte_site_settings_cache_v5";
 
 function mergeSettingsHelper(remoteData: any): SiteSettings {
   if (!remoteData || typeof remoteData !== "object") return defaultSettings;
 
+  const rawCarousel = Array.isArray(remoteData.images?.heroCarousel)
+    ? remoteData.images.heroCarousel
+    : defaultSettings.images.heroCarousel;
+
+  const cleanedCarousel = rawCarousel.map((item: any) => ({
+    ...item,
+    url: sanitizeImageUrl(item.url),
+  }));
+
+  const rawIndustry = remoteData.images?.industryCards || defaultSettings.images.industryCards;
+  const cleanedIndustry: any = {};
+  for (const [k, v] of Object.entries(rawIndustry)) {
+    cleanedIndustry[k] = {
+      ...(v as any),
+      url: sanitizeImageUrl((v as any)?.url),
+    };
+  }
+
   return {
     ...defaultSettings,
     ...remoteData,
+    logoUrl: sanitizeImageUrl(remoteData.logoUrl) || defaultSettings.logoUrl,
+    faviconUrl: sanitizeImageUrl(remoteData.faviconUrl) || defaultSettings.faviconUrl,
     navbarMenu: {
       ...defaultSettings.navbarMenu,
       ...(remoteData.navbarMenu || {}),
@@ -353,13 +384,13 @@ function mergeSettingsHelper(remoteData: any): SiteSettings {
     faqSection: {
       ...defaultSettings.faqSection,
       ...(remoteData.faqSection || {}),
+      image: sanitizeImageUrl(remoteData.faqSection?.image) || defaultSettings.faqSection.image,
     },
     images: {
       ...defaultSettings.images,
       ...(remoteData.images || {}),
-      heroCarousel: Array.isArray(remoteData.images?.heroCarousel)
-        ? remoteData.images.heroCarousel
-        : defaultSettings.images.heroCarousel,
+      heroCarousel: cleanedCarousel,
+      industryCards: cleanedIndustry,
     },
   };
 }

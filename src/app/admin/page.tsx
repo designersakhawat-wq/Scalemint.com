@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useSiteConfig, SiteSettings, NavServiceItem, FooterLinkItem, FooterSocialItem } from "@/context/SiteConfigContext";
+import { useSiteConfig, SiteSettings, NavServiceItem, FooterLinkItem, FooterSocialItem, sanitizeImageUrl } from "@/context/SiteConfigContext";
+import { ImageUploadField, optimizeImageFile } from "@/components/ImageUploadField";
 import { API_BASE_URL } from "@/lib/api";
 import {
   initialServices,
@@ -398,20 +399,15 @@ export default function AdminDashboardPage() {
   };
 
   const handleUploadFile = async (file: File): Promise<string> => {
-    const formData = new FormData();
-    formData.append("file", file);
     try {
-      const res = await fetch(`${API_BASE_URL}/uploads`, {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
-      if (data.success && data.data?.url) {
-        if (data.data.url.startsWith("http")) return data.data.url;
-        const rootOrigin = API_BASE_URL.replace(/\/api\/v1\/?$/, "");
-        return `${rootOrigin}${data.data.url.startsWith("/") ? "" : "/"}${data.data.url}`;
+      // 1. Instant client-side Canvas optimization & compression (< 1600px, 85% WebP/JPEG)
+      const optimizedDataUrl = await optimizeImageFile(file);
+      if (optimizedDataUrl) {
+        return sanitizeImageUrl(optimizedDataUrl);
       }
-    } catch {}
+    } catch (err) {
+      console.error("Client image optimization failed:", err);
+    }
     return URL.createObjectURL(file);
   };
 
@@ -2046,10 +2042,11 @@ export default function AdminDashboardPage() {
                   {formSettings.images?.heroCarousel?.map((slide, idx) => {
                     const pos = slide.position || "center";
                     return (
-                      <div key={slide.id || idx} className="p-4 rounded-xl bg-white/5 border border-white/10 space-y-3">
-                        <div className="flex items-center justify-between">
-                          <span className="font-semibold text-xs text-brand-electric">Slide #{idx + 1}</span>
+                      <div key={slide.id || idx} className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-4 shadow-lg">
+                        <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
+                          <span className="font-bold text-xs text-brand-electric">Slide #{idx + 1}</span>
                           <button
+                            type="button"
                             onClick={() => {
                               requestDeleteConfirm(`Delete Slide #${idx + 1}?`, "This slide will be removed from the carousel.", () => {
                                 const filtered = formSettings.images.heroCarousel.filter((_, i) => i !== idx);
@@ -2059,27 +2056,14 @@ export default function AdminDashboardPage() {
                                 });
                               });
                             }}
-                            className="text-rose-400 hover:text-rose-300 text-xs flex items-center gap-1 cursor-pointer"
+                            className="text-rose-400 hover:text-rose-300 text-xs flex items-center gap-1 cursor-pointer font-semibold"
                           >
-                            <Icons.Trash /> <span>Remove</span>
+                            <Icons.Trash /> <span>Delete Slide</span>
                           </button>
                         </div>
 
-                        <div className="w-full h-44 rounded-xl overflow-hidden relative border border-white/10 bg-slate-900">
-                          <img
-                            src={slide.url}
-                            alt={slide.title}
-                            style={{ objectPosition: pos }}
-                            className="w-full h-full object-cover"
-                          />
-                          <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#040822]/80 via-transparent to-transparent"></div>
-                          <div className="absolute bottom-2 left-3 z-10 text-[11px] font-bold text-white drop-shadow">
-                            {slide.title}
-                          </div>
-                        </div>
-
                         <div>
-                          <label className="block text-[11px] text-slate-400 mb-1">Title Label</label>
+                          <label className="block text-xs text-slate-300 font-semibold mb-1">Title / Caption</label>
                           <input
                             type="text"
                             value={slide.title}
@@ -2088,45 +2072,24 @@ export default function AdminDashboardPage() {
                               updated[idx].title = e.target.value;
                               setFormSettings({ ...formSettings, images: { ...formSettings.images, heroCarousel: updated } });
                             }}
-                            className="w-full px-2.5 py-1.5 bg-black/30 border border-white/10 rounded-lg text-xs text-white"
+                            placeholder="e.g. Educational Design"
+                            className="w-full px-3 py-2 bg-black/40 border border-white/10 rounded-xl text-xs text-white"
                           />
                         </div>
 
-                        <div>
-                          <label className="block text-[11px] text-slate-400 mb-1">Image URL / Upload New Image</label>
-                          <div className="flex gap-2">
-                            <input
-                              type="text"
-                              value={slide.url}
-                              onChange={(e) => {
-                                const updated = [...formSettings.images.heroCarousel];
-                                updated[idx].url = e.target.value;
-                                setFormSettings({ ...formSettings, images: { ...formSettings.images, heroCarousel: updated } });
-                              }}
-                              className="flex-1 px-2.5 py-1.5 bg-black/30 border border-white/10 rounded-lg text-xs text-white"
-                            />
-                            <label className="p-2 bg-brand-electric/20 text-brand-electric rounded-lg border border-brand-electric/40 text-xs cursor-pointer hover:bg-brand-electric hover:text-white">
-                              <Icons.Upload />
-                              <input
-                                type="file"
-                                accept="image/*"
-                                className="hidden"
-                                onChange={async (e) => {
-                                  const file = e.target.files?.[0];
-                                  if (file) {
-                                    const url = await handleUploadFile(file);
-                                    const updated = [...formSettings.images.heroCarousel];
-                                    updated[idx].url = url;
-                                    setFormSettings({ ...formSettings, images: { ...formSettings.images, heroCarousel: updated } });
-                                  }
-                                }}
-                              />
-                            </label>
-                          </div>
-                        </div>
+                        <ImageUploadField
+                          label="Slide Image (Auto-Optimized)"
+                          value={slide.url}
+                          onChange={(url) => {
+                            const updated = [...formSettings.images.heroCarousel];
+                            updated[idx].url = url;
+                            setFormSettings({ ...formSettings, images: { ...formSettings.images, heroCarousel: updated } });
+                          }}
+                          aspectRatio="16/10"
+                        />
 
                         <div>
-                          <label className="block text-[10px] text-slate-400 mb-1">🎯 Image Focus / Vertical Alignment</label>
+                          <label className="block text-[11px] text-slate-300 font-semibold mb-1">🎯 Image Focus / Vertical Alignment</label>
                           <select
                             value={pos}
                             onChange={(e) => {
@@ -2134,7 +2097,7 @@ export default function AdminDashboardPage() {
                               updated[idx].position = e.target.value as any;
                               setFormSettings({ ...formSettings, images: { ...formSettings.images, heroCarousel: updated } });
                             }}
-                            className="w-full px-2 py-1.5 bg-black/30 border border-white/10 rounded text-xs text-white"
+                            className="w-full px-3 py-2 bg-black/40 border border-white/10 rounded-xl text-xs text-white"
                           >
                             <option value="center">Center Focus (Standard)</option>
                             <option value="top">Top Focus (Show Head/Top Area)</option>
@@ -2222,59 +2185,23 @@ export default function AdminDashboardPage() {
               <h1 className="text-2xl font-bold text-white">Website Branding & Global Theme</h1>
               <form onSubmit={(e) => handleSaveSettings(e)} className="space-y-6 bg-[#0b1138] border border-white/10 p-6 rounded-2xl">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-300 uppercase mb-2">Logo</label>
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        value={formSettings.logoUrl}
-                        onChange={(e) => setFormSettings({ ...formSettings, logoUrl: e.target.value })}
-                        className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-white"
-                      />
-                      <label className="p-2 bg-brand-electric/20 text-brand-electric rounded-xl border border-brand-electric/40 text-xs cursor-pointer">
-                        <Icons.Upload />
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={async (e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              const url = await handleUploadFile(file);
-                              setFormSettings({ ...formSettings, logoUrl: url });
-                            }
-                          }}
-                        />
-                      </label>
-                    </div>
-                  </div>
+                  <ImageUploadField
+                    label="Website Logo"
+                    value={formSettings.logoUrl}
+                    onChange={(url) => setFormSettings({ ...formSettings, logoUrl: url })}
+                    aspectRatio="1/1"
+                    placeholder="/images/logo.png"
+                    helperText="Main header and footer logo (Auto-compressed)"
+                  />
 
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-300 uppercase mb-2">Favicon</label>
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        value={formSettings.faviconUrl}
-                        onChange={(e) => setFormSettings({ ...formSettings, faviconUrl: e.target.value })}
-                        className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-white"
-                      />
-                      <label className="p-2 bg-brand-electric/20 text-brand-electric rounded-xl border border-brand-electric/40 text-xs cursor-pointer">
-                        <Icons.Upload />
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={async (e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              const url = await handleUploadFile(file);
-                              setFormSettings({ ...formSettings, faviconUrl: url });
-                            }
-                          }}
-                        />
-                      </label>
-                    </div>
-                  </div>
+                  <ImageUploadField
+                    label="Browser Favicon"
+                    value={formSettings.faviconUrl}
+                    onChange={(url) => setFormSettings({ ...formSettings, faviconUrl: url })}
+                    aspectRatio="1/1"
+                    placeholder="/favicon.ico"
+                    helperText="Browser tab icon (ICO, PNG, or SVG)"
+                  />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 border-t border-white/10">
@@ -3164,32 +3091,37 @@ export default function AdminDashboardPage() {
             {modalType === "blog" && (
               <form onSubmit={(e) => { e.preventDefault(); saveBlog(editItem); }} className="space-y-4 text-xs">
                 <div>
-                  <label className="block text-slate-400 mb-1">Title</label>
-                  <input type="text" required value={editItem.title} onChange={(e) => setEditItem({ ...editItem, title: e.target.value })} className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white" />
+                  <label className="block text-slate-300 font-semibold mb-1">Article Title</label>
+                  <input
+                    type="text"
+                    required
+                    value={editItem.title || ""}
+                    onChange={(e) => setEditItem({ ...editItem, title: e.target.value })}
+                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white font-semibold"
+                    placeholder="e.g. 10 Proven Marketing Strategies for 2026"
+                  />
                 </div>
+                <ImageUploadField
+                  label="Featured Banner / Cover Image"
+                  value={editItem.image || ""}
+                  onChange={(url) => setEditItem({ ...editItem, image: url })}
+                  aspectRatio="16/9"
+                  placeholder="Image URL or upload file..."
+                  helperText="Recommended 16:9 banner (Auto-compressed to ~100KB)"
+                />
                 <div>
-                  <label className="block text-slate-400 mb-1">Featured Image URL / Upload</label>
-                  <div className="flex gap-2">
-                    <input type="text" value={editItem.image} onChange={(e) => setEditItem({ ...editItem, image: e.target.value })} className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white" />
-                    <label className="p-2 bg-brand-electric/20 text-brand-electric rounded-xl border border-brand-electric/40 cursor-pointer">
-                      <Icons.Upload />
-                      <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          const url = await handleUploadFile(file);
-                          setEditItem({ ...editItem, image: url });
-                        }
-                      }} />
-                    </label>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-slate-400 mb-1">Excerpt</label>
-                  <textarea rows={2} value={editItem.excerpt} onChange={(e) => setEditItem({ ...editItem, excerpt: e.target.value })} className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white" />
+                  <label className="block text-slate-300 font-semibold mb-1">Excerpt / Short Summary</label>
+                  <textarea
+                    rows={3}
+                    value={editItem.excerpt || ""}
+                    onChange={(e) => setEditItem({ ...editItem, excerpt: e.target.value })}
+                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white leading-relaxed"
+                    placeholder="Brief description for the blog preview card..."
+                  />
                 </div>
                 <div className="flex justify-end gap-2 pt-4 border-t border-white/10">
-                  <button type="button" onClick={() => setModalType(null)} className="px-4 py-2 bg-white/10 rounded-xl text-white">Cancel</button>
-                  <button type="submit" className="px-4 py-2 bg-brand-electric rounded-xl text-white font-semibold">Save</button>
+                  <button type="button" onClick={() => setModalType(null)} className="px-4 py-2 bg-white/10 rounded-xl text-white hover:bg-white/15 cursor-pointer">Cancel</button>
+                  <button type="submit" className="px-5 py-2 bg-brand-electric rounded-xl text-white font-bold hover:bg-blue-600 cursor-pointer shadow-lg shadow-brand-electric/25">Save Article</button>
                 </div>
               </form>
             )}
@@ -3197,28 +3129,37 @@ export default function AdminDashboardPage() {
             {modalType === "portfolio" && (
               <form onSubmit={(e) => { e.preventDefault(); savePortfolio(editItem); }} className="space-y-4 text-xs">
                 <div>
-                  <label className="block text-slate-400 mb-1">Project Title</label>
-                  <input type="text" required value={editItem.title} onChange={(e) => setEditItem({ ...editItem, title: e.target.value })} className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white" />
+                  <label className="block text-slate-300 font-semibold mb-1">Project Title</label>
+                  <input
+                    type="text"
+                    required
+                    value={editItem.title || ""}
+                    onChange={(e) => setEditItem({ ...editItem, title: e.target.value })}
+                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white font-semibold"
+                    placeholder="e.g. Fintech Mobile App Redesign"
+                  />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1">Project Screenshot URL / Upload</label>
-                  <div className="flex gap-2">
-                    <input type="text" value={editItem.image} onChange={(e) => setEditItem({ ...editItem, image: e.target.value })} className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white" />
-                    <label className="p-2 bg-brand-electric/20 text-brand-electric rounded-xl border border-brand-electric/40 cursor-pointer">
-                      <Icons.Upload />
-                      <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          const url = await handleUploadFile(file);
-                          setEditItem({ ...editItem, image: url });
-                        }
-                      }} />
-                    </label>
-                  </div>
+                  <label className="block text-slate-300 font-semibold mb-1">Category</label>
+                  <input
+                    type="text"
+                    value={editItem.category || ""}
+                    onChange={(e) => setEditItem({ ...editItem, category: e.target.value })}
+                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white"
+                    placeholder="e.g. Web Design / Branding"
+                  />
                 </div>
+                <ImageUploadField
+                  label="Project Screenshot / Showcase Image"
+                  value={editItem.image || ""}
+                  onChange={(url) => setEditItem({ ...editItem, image: url })}
+                  aspectRatio="16/9"
+                  placeholder="Image URL or upload file..."
+                  helperText="Showcase image (Auto-compressed to crisp WebP/JPEG)"
+                />
                 <div className="flex justify-end gap-2 pt-4 border-t border-white/10">
-                  <button type="button" onClick={() => setModalType(null)} className="px-4 py-2 bg-white/10 rounded-xl text-white">Cancel</button>
-                  <button type="submit" className="px-4 py-2 bg-brand-electric rounded-xl text-white font-semibold">Save</button>
+                  <button type="button" onClick={() => setModalType(null)} className="px-4 py-2 bg-white/10 rounded-xl text-white hover:bg-white/15 cursor-pointer">Cancel</button>
+                  <button type="submit" className="px-5 py-2 bg-brand-electric rounded-xl text-white font-bold hover:bg-blue-600 cursor-pointer shadow-lg shadow-brand-electric/25">Save Project</button>
                 </div>
               </form>
             )}
@@ -3300,36 +3241,14 @@ export default function AdminDashboardPage() {
                       </div>
                     </div>
 
-                    <div>
-                      <label className="block text-slate-400 font-semibold mb-1">Profile Photo URL / Upload</label>
-                      <div className="flex gap-2 items-center">
-                        {editItem.img && (
-                          <img src={editItem.img} alt="Preview" className="w-9 h-9 rounded-xl object-cover border border-white/20 shrink-0" />
-                        )}
-                        <input
-                          type="text"
-                          value={editItem.img || ""}
-                          onChange={(e) => setEditItem({ ...editItem, img: e.target.value })}
-                          className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white font-mono text-xs"
-                          placeholder="/images/team1.jpg"
-                        />
-                        <label className="p-2.5 bg-brand-electric/20 text-brand-electric rounded-xl border border-brand-electric/40 cursor-pointer hover:bg-brand-electric/30 transition-colors">
-                          <Icons.Upload />
-                          <input
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={async (e) => {
-                              const file = e.target.files?.[0];
-                              if (file) {
-                                const url = await handleUploadFile(file);
-                                setEditItem({ ...editItem, img: url });
-                              }
-                            }}
-                          />
-                        </label>
-                      </div>
-                    </div>
+                    <ImageUploadField
+                      label="Profile Photo"
+                      value={editItem.img || ""}
+                      onChange={(url) => setEditItem({ ...editItem, img: url })}
+                      aspectRatio="avatar"
+                      placeholder="/images/team1.jpg"
+                      helperText="Square or portrait photo (Auto-compressed to ~80KB)"
+                    />
 
                     <div>
                       <label className="block text-slate-400 font-semibold mb-1">About Me / Full Biography</label>
@@ -4151,69 +4070,23 @@ export default function AdminDashboardPage() {
                   <span className="font-bold text-white block text-xs">5. Company Logo & Authorized Signature / Stamp</span>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {/* Invoice Logo */}
-                    <div className="p-3 bg-black/40 border border-white/10 rounded-xl space-y-2">
-                      <label className="block text-slate-300 font-semibold text-[11px]">Invoice Header Logo</label>
-                      <div className="flex items-center gap-2">
-                        {editItem.logoUrl && (
-                          <img src={editItem.logoUrl} alt="Logo" className="w-10 h-10 object-contain bg-white rounded-lg p-1 shrink-0" />
-                        )}
-                        <input
-                          type="text"
-                          value={editItem.logoUrl || ""}
-                          onChange={(e) => setEditItem({ ...editItem, logoUrl: e.target.value })}
-                          className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-xs font-mono"
-                          placeholder="Logo Image URL (or upload)"
-                        />
-                        <label className="p-2.5 bg-brand-electric/20 text-brand-electric rounded-lg border border-brand-electric/40 cursor-pointer hover:bg-brand-electric/30 transition">
-                          <Icons.Upload />
-                          <input
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={async (e) => {
-                              const file = e.target.files?.[0];
-                              if (file) {
-                                const url = await handleUploadFile(file);
-                                setEditItem({ ...editItem, logoUrl: url });
-                              }
-                            }}
-                          />
-                        </label>
-                      </div>
-                    </div>
+                    <ImageUploadField
+                      label="Invoice Header Logo"
+                      value={editItem.logoUrl || ""}
+                      onChange={(url) => setEditItem({ ...editItem, logoUrl: url })}
+                      aspectRatio="1/1"
+                      placeholder="Logo Image URL or upload..."
+                      helperText="Company logo on invoice header"
+                    />
 
-                    {/* Invoice Signature */}
-                    <div className="p-3 bg-black/40 border border-white/10 rounded-xl space-y-2">
-                      <label className="block text-slate-300 font-semibold text-[11px]">Authorized Signature / Seal Image</label>
-                      <div className="flex items-center gap-2">
-                        {editItem.signatureUrl && (
-                          <img src={editItem.signatureUrl} alt="Signature" className="w-10 h-10 object-contain bg-white rounded-lg p-1 shrink-0" />
-                        )}
-                        <input
-                          type="text"
-                          value={editItem.signatureUrl || ""}
-                          onChange={(e) => setEditItem({ ...editItem, signatureUrl: e.target.value })}
-                          className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-xs font-mono"
-                          placeholder="Signature Image URL (or upload)"
-                        />
-                        <label className="p-2.5 bg-brand-electric/20 text-brand-electric rounded-lg border border-brand-electric/40 cursor-pointer hover:bg-brand-electric/30 transition">
-                          <Icons.Upload />
-                          <input
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={async (e) => {
-                              const file = e.target.files?.[0];
-                              if (file) {
-                                const url = await handleUploadFile(file);
-                                setEditItem({ ...editItem, signatureUrl: url });
-                              }
-                            }}
-                          />
-                        </label>
-                      </div>
-                    </div>
+                    <ImageUploadField
+                      label="Authorized Signature / Seal Image"
+                      value={editItem.signatureUrl || ""}
+                      onChange={(url) => setEditItem({ ...editItem, signatureUrl: url })}
+                      aspectRatio="1/1"
+                      placeholder="Signature Image URL or upload..."
+                      helperText="Official signature/stamp (PNG recommended)"
+                    />
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
