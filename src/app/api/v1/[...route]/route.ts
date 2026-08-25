@@ -19,8 +19,8 @@ function getSegments(params: { route?: string[] } | undefined): string[] {
 function cleanSettingsData(settings: any) {
   try {
     if (!settings || typeof settings !== "object") return defaultSettings;
-    const defaultImages = defaultSettings.images;
-    const defaultCarousel = defaultImages.heroCarousel;
+    const defaultImages = defaultSettings.images || {};
+    const defaultCarousel = defaultImages.heroCarousel || [];
 
     const rawCarousel = Array.isArray(settings.images?.heroCarousel) && settings.images.heroCarousel.length > 0
       ? settings.images.heroCarousel
@@ -40,12 +40,27 @@ function cleanSettingsData(settings: any) {
       };
     });
 
-    const rawIndustry = settings.images?.industryCards || defaultImages.industryCards;
-    const rawLogos = Array.isArray(settings.images?.clientLogos) ? settings.images.clientLogos : defaultImages.clientLogos;
+    const rawIndustry = settings.images?.industryCards || defaultImages.industryCards || {};
+    const rawLogos = Array.isArray(settings.images?.clientLogos) ? settings.images.clientLogos : (defaultImages.clientLogos || []);
 
     return {
       ...defaultSettings,
       ...settings,
+      navbarMenu: {
+        ...defaultSettings.navbarMenu,
+        ...(settings.navbarMenu || {}),
+        servicesDropdown: {
+          ...defaultSettings.navbarMenu?.servicesDropdown,
+          ...(settings.navbarMenu?.servicesDropdown || {}),
+          items: Array.isArray(settings.navbarMenu?.servicesDropdown?.items)
+            ? settings.navbarMenu.servicesDropdown.items
+            : defaultSettings.navbarMenu?.servicesDropdown?.items || [],
+        },
+      },
+      footerConfig: {
+        ...defaultSettings.footerConfig,
+        ...(settings.footerConfig || {}),
+      },
       images: {
         ...defaultImages,
         ...(settings.images || {}),

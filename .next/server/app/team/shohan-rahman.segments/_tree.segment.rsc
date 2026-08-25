@@ -3,4 +3,4 @@
 :HL["/_next/static/media/70e3db2de7f94926-s.p.39pl-v7c3qrze.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/_next/static/media/fba5a26ea33df6a3-s.p.18rizl4rsrl42.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/images/team4.jpg","image"]
-0:{"tree":{"name":"","param":null,"prefetchHints":4176,"slots":{"children":{"name":"team","param":null,"prefetchHints":4192,"slots":{"children":{"name":"slug","param":{"type":"d","key":"shohan-rahman","siblings":[]},"prefetchHints":4192,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}}}},"staleTime":300,"buildId":"MSI9kbWuIZyFjk6clodmD"}
+0:{"tree":{"name":"","param":null,"prefetchHints":4176,"slots":{"children":{"name":"team","param":null,"prefetchHints":4192,"slots":{"children":{"name":"slug","param":{"type":"d","key":"shohan-rahman","siblings":[]},"prefetchHints":4192,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}}}},"staleTime":300,"buildId":"SYxm7kTwXoKyIGwQhMepW"}
