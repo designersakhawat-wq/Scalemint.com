@@ -4,6 +4,15 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useSiteConfig, SiteSettings, NavServiceItem, FooterLinkItem, FooterSocialItem } from "@/context/SiteConfigContext";
 import { API_BASE_URL } from "@/lib/api";
+import {
+  initialServices,
+  initialBlogs,
+  initialPortfolio,
+  initialPackages,
+  initialTeam,
+  initialFaqs,
+  initialInvoices,
+} from "@/data/initialData";
 
 // Clean inline SVGs
 const Icons = {
@@ -107,14 +116,140 @@ export default function AdminDashboardPage() {
     "overview" | "invoices" | "navmenu" | "footer" | "legal" | "media" | "faqs" | "settings" | "packages" | "blogs" | "services" | "portfolio" | "team"
   >("overview");
 
-  // CMS Collections
-  const [packages, setPackages] = useState<any[]>([]);
-  const [blogs, setBlogs] = useState<any[]>([]);
-  const [services, setServices] = useState<any[]>([]);
-  const [portfolio, setPortfolio] = useState<any[]>([]);
-  const [team, setTeam] = useState<any[]>([]);
-  const [faqs, setFaqs] = useState<any[]>([]);
-  const [invoices, setInvoices] = useState<any[]>([]);
+  // CMS Collections with initial fallback
+  const [packages, setPackages] = useState<any[]>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("scaleminte_packages");
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        } catch {}
+      }
+    }
+    return initialPackages;
+  });
+
+  const [blogs, setBlogs] = useState<any[]>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("scaleminte_blogs");
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        } catch {}
+      }
+    }
+    return initialBlogs;
+  });
+
+  const [services, setServices] = useState<any[]>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("scaleminte_services");
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        } catch {}
+      }
+    }
+    return initialServices;
+  });
+
+  const [portfolio, setPortfolio] = useState<any[]>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("scaleminte_portfolio");
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        } catch {}
+      }
+    }
+    return initialPortfolio;
+  });
+
+  const [team, setTeam] = useState<any[]>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("scaleminte_team");
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        } catch {}
+      }
+    }
+    return initialTeam;
+  });
+
+  const [faqs, setFaqs] = useState<any[]>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("scaleminte_faqs");
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        } catch {}
+      }
+    }
+    return initialFaqs;
+  });
+
+  const [invoices, setInvoices] = useState<any[]>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("scaleminte_invoices");
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        } catch {}
+      }
+    }
+    return initialInvoices;
+  });
+
+  // LocalStorage Persistence Hooks
+  useEffect(() => {
+    if (typeof window !== "undefined" && packages.length > 0) {
+      localStorage.setItem("scaleminte_packages", JSON.stringify(packages));
+    }
+  }, [packages]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && blogs.length > 0) {
+      localStorage.setItem("scaleminte_blogs", JSON.stringify(blogs));
+    }
+  }, [blogs]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && services.length > 0) {
+      localStorage.setItem("scaleminte_services", JSON.stringify(services));
+    }
+  }, [services]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && portfolio.length > 0) {
+      localStorage.setItem("scaleminte_portfolio", JSON.stringify(portfolio));
+    }
+  }, [portfolio]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && team.length > 0) {
+      localStorage.setItem("scaleminte_team", JSON.stringify(team));
+    }
+  }, [team]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && faqs.length > 0) {
+      localStorage.setItem("scaleminte_faqs", JSON.stringify(faqs));
+    }
+  }, [faqs]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && invoices.length > 0) {
+      localStorage.setItem("scaleminte_invoices", JSON.stringify(invoices));
+    }
+  }, [invoices]);
 
   // Invoice Filter & Preview State
   const [invoiceSearchQuery, setInvoiceSearchQuery] = useState("");
@@ -225,14 +360,29 @@ export default function AdminDashboardPage() {
           fetch(`${API_BASE_URL}/invoices`).then((r) => r.json()).catch(() => ({ data: [] })),
         ]);
 
-      if (resServices?.data) setServices(resServices.data);
-      if (resBlogs?.data?.items) setBlogs(resBlogs.data.items);
-      else if (Array.isArray(resBlogs?.data)) setBlogs(resBlogs.data);
-      if (resPortfolio?.data) setPortfolio(resPortfolio.data);
-      if (resPackages?.data) setPackages(resPackages.data);
-      if (resTeam?.data) setTeam(resTeam.data);
-      if (resFaqs?.data) setFaqs(resFaqs.data);
-      if (resInvoices?.data) setInvoices(resInvoices.data);
+      if (Array.isArray(resServices?.data) && resServices.data.length > 0) {
+        setServices(resServices.data);
+      }
+      if (Array.isArray(resBlogs?.data?.items) && resBlogs.data.items.length > 0) {
+        setBlogs(resBlogs.data.items);
+      } else if (Array.isArray(resBlogs?.data) && resBlogs.data.length > 0) {
+        setBlogs(resBlogs.data);
+      }
+      if (Array.isArray(resPortfolio?.data) && resPortfolio.data.length > 0) {
+        setPortfolio(resPortfolio.data);
+      }
+      if (Array.isArray(resPackages?.data) && resPackages.data.length > 0) {
+        setPackages(resPackages.data);
+      }
+      if (Array.isArray(resTeam?.data) && resTeam.data.length > 0) {
+        setTeam(resTeam.data);
+      }
+      if (Array.isArray(resFaqs?.data) && resFaqs.data.length > 0) {
+        setFaqs(resFaqs.data);
+      }
+      if (Array.isArray(resInvoices?.data) && resInvoices.data.length > 0) {
+        setInvoices(resInvoices.data);
+      }
     } catch (err) {
       console.error("Error loading data:", err);
     }
