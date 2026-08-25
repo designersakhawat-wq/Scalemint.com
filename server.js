@@ -39,6 +39,7 @@ function serveStaticFile(req, res) {
       const candidates = [
         path.join(__dirname, '.next', 'static', subPath),
         path.join(__dirname, '.next', 'standalone', '.next', 'static', subPath),
+        path.join(__dirname, 'public', '_next', 'static', subPath),
       ];
 
       for (const p of candidates) {
@@ -55,8 +56,8 @@ function serveStaticFile(req, res) {
         }
       }
 
-      // CSS Fallback: If a specific CSS chunk was requested but not found (e.g. from cached HTML),
-      // serve the active CSS file from chunks directory so styling never breaks!
+      // CSS Fallback: If ANY specific CSS chunk was requested but not found (e.g. from cached HTML or CDN),
+      // serve the active CSS file from chunks directory so styling NEVER breaks!
       if (url.endsWith('.css')) {
         const chunkDirs = [
           path.join(__dirname, '.next', 'static', 'chunks'),
@@ -138,9 +139,23 @@ try {
 
   app.prepare().then(() => {
     const server = createServer((req, res) => {
+      // Direct static serving fast path
       if (serveStaticFile(req, res)) {
         return;
       }
+
+      // Ensure anti-cache headers for dynamic HTML pages
+      const originalSetHeader = res.setHeader.bind(res);
+      res.setHeader = function(name, value) {
+        if (typeof name === 'string' && name.toLowerCase() === 'cache-control') {
+          const rawUrl = req.url || '';
+          if (!rawUrl.startsWith('/_next/static/') && !rawUrl.startsWith('/images/')) {
+            return originalSetHeader('Cache-Control', 'public, max-age=0, must-revalidate, s-maxage=0');
+          }
+        }
+        return originalSetHeader(name, value);
+      };
+
       handle(req, res);
     });
 
@@ -162,3 +177,4 @@ function launchStandaloneFallback() {
     require(standaloneServer);
   }
 }
+
