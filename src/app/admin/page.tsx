@@ -276,16 +276,24 @@ export default function AdminDashboardPage() {
 
   const [saveSuccessMessage, setSaveSuccessMessage] = useState("");
 
-  // DELETE CONFIRMATION MODAL STATE
-  const [deleteConfirm, setDeleteConfirm] = useState<{
+  // UNIVERSAL CONFIRMATION POPUP MODAL STATE
+  const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
     title: string;
     description: string;
+    confirmText?: string;
+    cancelText?: string;
+    confirmColor?: string;
+    icon?: string;
     onConfirm: () => void;
   }>({
     isOpen: false,
     title: "",
     description: "",
+    confirmText: "Yes, Save Changes",
+    cancelText: "Cancel",
+    confirmColor: "bg-brand-electric",
+    icon: "🖼️",
     onConfirm: () => {},
   });
 
@@ -421,13 +429,17 @@ export default function AdminDashboardPage() {
   };
 
   const requestDeleteConfirm = (title: string, description: string, onConfirm: () => void) => {
-    setDeleteConfirm({
+    setConfirmModal({
       isOpen: true,
       title,
       description,
+      confirmText: "Yes, Delete Item",
+      cancelText: "Cancel",
+      confirmColor: "bg-rose-600 hover:bg-rose-500 shadow-rose-600/30",
+      icon: "🗑️",
       onConfirm: () => {
         onConfirm();
-        setDeleteConfirm((prev) => ({ ...prev, isOpen: false }));
+        setConfirmModal((prev) => ({ ...prev, isOpen: false }));
       },
     });
   };
@@ -2156,10 +2168,26 @@ export default function AdminDashboardPage() {
 
               <div className="flex justify-end pt-4">
                 <button
-                  onClick={() => handleSaveSettings()}
-                  className="px-6 py-3 bg-brand-electric text-white font-bold rounded-xl text-xs hover:bg-blue-600 shadow-lg shadow-brand-electric/30 cursor-pointer"
+                  type="button"
+                  onClick={() => {
+                    setConfirmModal({
+                      isOpen: true,
+                      title: "Save All Image & Size Changes?",
+                      description: "Are you sure you want to save all hero carousel images, card sizes, and focus alignments to the live website?",
+                      confirmText: "Yes, Save Changes",
+                      cancelText: "Cancel",
+                      confirmColor: "bg-brand-electric hover:bg-blue-600 shadow-blue-500/30",
+                      icon: "🖼️",
+                      onConfirm: async () => {
+                        setConfirmModal((prev) => ({ ...prev, isOpen: false }));
+                        await handleSaveSettings(undefined, "All Image and Size changes saved successfully!");
+                      },
+                    });
+                  }}
+                  className="px-6 py-3 bg-brand-electric text-white font-bold rounded-xl text-xs hover:bg-blue-600 shadow-lg shadow-brand-electric/30 cursor-pointer flex items-center gap-2 transition-all hover:scale-[1.02]"
                 >
-                  Save All Image & Size Changes
+                  <span>💾</span>
+                  <span>Save All Image & Size Changes</span>
                 </button>
               </div>
             </div>
@@ -2694,36 +2722,6 @@ export default function AdminDashboardPage() {
           )}
         </main>
       </div>
-
-      {/* CONFIRMATION MODAL */}
-      {deleteConfirm.isOpen && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#0b1138] border border-rose-500/30 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4">
-            <div className="flex items-center gap-3 text-rose-400">
-              <Icons.Warning />
-              <h3 className="font-bold text-white text-base">Confirm Deletion</h3>
-            </div>
-            <p className="text-slate-300 text-sm font-semibold">{deleteConfirm.title}</p>
-            <p className="text-slate-400 text-xs">{deleteConfirm.description}</p>
-            <div className="flex justify-end gap-3 pt-4 border-t border-white/10">
-              <button
-                type="button"
-                onClick={() => setDeleteConfirm((prev) => ({ ...prev, isOpen: false }))}
-                className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs cursor-pointer"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                onClick={deleteConfirm.onConfirm}
-                className="px-5 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-xl text-xs shadow-lg shadow-rose-600/30 cursor-pointer"
-              >
-                Confirm Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* FORM MODALS */}
       {modalType && editItem && (
@@ -4375,6 +4373,39 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* UNIVERSAL CONFIRMATION POPUP MODAL */}
+      {confirmModal.isOpen && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+          <div className="bg-[#0b1138] border border-white/15 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-5 text-center">
+            <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto text-3xl shadow-inner">
+              {confirmModal.icon || "⚡"}
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-lg font-bold text-white tracking-tight">{confirmModal.title}</h3>
+              <p className="text-xs text-slate-300 leading-relaxed max-w-sm mx-auto">{confirmModal.description}</p>
+            </div>
+            <div className="flex items-center justify-center gap-3 pt-3 border-t border-white/10">
+              <button
+                type="button"
+                onClick={() => setConfirmModal((prev) => ({ ...prev, isOpen: false }))}
+                className="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-slate-300 font-semibold text-xs transition cursor-pointer"
+              >
+                {confirmModal.cancelText || "Cancel"}
+              </button>
+              <button
+                type="button"
+                onClick={confirmModal.onConfirm}
+                className={`px-6 py-2.5 rounded-xl font-bold text-xs text-white transition shadow-lg cursor-pointer ${
+                  confirmModal.confirmColor || "bg-brand-electric hover:bg-blue-600 shadow-blue-500/30"
+                }`}
+              >
+                {confirmModal.confirmText || "Yes, Confirm"}
+              </button>
             </div>
           </div>
         </div>
