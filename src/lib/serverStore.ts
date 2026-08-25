@@ -9,7 +9,7 @@ import {
   initialFaqs,
   initialInvoices,
 } from "@/data/initialData";
-import { defaultSettings } from "@/context/SiteConfigContext";
+import { defaultSettings } from "@/data/defaultSettings";
 
 function getDataDirs(): string[] {
   const dirs: string[] = [

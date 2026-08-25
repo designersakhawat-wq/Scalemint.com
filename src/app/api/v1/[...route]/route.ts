@@ -11,7 +11,7 @@ import {
   initialFaqs,
   initialInvoices,
 } from "@/data/initialData";
-import { defaultSettings } from "@/context/SiteConfigContext";
+import { defaultSettings } from "@/data/defaultSettings";
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
