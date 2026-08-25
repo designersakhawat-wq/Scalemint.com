@@ -104,7 +104,14 @@ export default function Footer() {
           <div className="flex flex-col gap-6">
             <Link href="/" className="font-bold text-3xl tracking-wide flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-electric to-brand-navy flex items-center justify-center shadow-[0_0_20px_rgba(27,67,255,0.4)]">
-                <img src={logoSrc} alt={`${siteName} Logo`} className="w-6 h-6 object-contain invert" />
+                <img
+                  src={logoSrc}
+                  alt={`${siteName} Logo`}
+                  width={24}
+                  height={24}
+                  style={{ width: "24px", height: "24px", maxWidth: "24px", maxHeight: "24px" }}
+                  className="w-6 h-6 object-contain invert shrink-0"
+                />
               </div>
               <span className="text-white">{siteName}</span>
             </Link>

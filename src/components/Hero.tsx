@@ -36,8 +36,15 @@ export default function Hero() {
         <div data-aos="fade-up" data-aos-delay="400" className="flex items-center gap-4 mb-10">
           <div className="flex -space-x-3">
             {[1,2,3,4,5].map((i) => (
-              <div key={i} className="w-10 h-10 rounded-full bg-slate-300 border-2 border-brand-navy overflow-hidden">
-                <img src={`https://i.pravatar.cc/100?img=${i+10}`} alt="avatar" className="w-full h-full object-cover" />
+              <div key={i} className="w-10 h-10 rounded-full bg-slate-300 border-2 border-brand-navy overflow-hidden shrink-0">
+                <img
+                  src={`https://i.pravatar.cc/100?img=${i+10}`}
+                  alt="avatar"
+                  width={40}
+                  height={40}
+                  style={{ width: "40px", height: "40px" }}
+                  className="w-full h-full object-cover"
+                />
               </div>
             ))}
           </div>

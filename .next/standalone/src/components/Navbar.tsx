@@ -62,7 +62,14 @@ export default function Navbar({ theme = 'dark' }: { theme?: 'light' | 'dark' })
     <nav className="absolute top-0 left-0 right-0 z-50 px-6 sm:px-8 py-6 max-w-7xl mx-auto">
       <div className="flex items-center justify-between">
         <Link href="/" className={`${textColor} font-bold text-xl tracking-wide flex items-center gap-2.5`}>
-          <img src={logoSrc} alt={`${siteName} Logo`} className="w-8 h-8 object-contain" />
+          <img
+            src={logoSrc}
+            alt={`${siteName} Logo`}
+            width={32}
+            height={32}
+            style={{ width: "32px", height: "32px", maxWidth: "32px", maxHeight: "32px" }}
+            className="w-8 h-8 object-contain shrink-0"
+          />
           <span>{siteName}</span>
         </Link>
         
