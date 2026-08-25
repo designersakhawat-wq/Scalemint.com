@@ -1,0 +1,196 @@
+[
+  {
+    "id": "inv_1787660081700",
+    "invoiceNumber": "INV-2026-005",
+    "clientName": "test 2",
+    "clientCompany": "loru",
+    "clientEmail": "loru@gmail.com",
+    "clientPhone": "2061654954151",
+    "clientAddress": "test 2",
+    "issueDate": "2026-08-25",
+    "dueDate": "2026-09-08",
+    "currency": "USD ($)",
+    "status": "Pending",
+    "items": [
+      {
+        "id": "item_1787659963549_1",
+        "description": "Digital Marketing & Design Services",
+        "quantity": 1,
+        "unitPrice": 500,
+        "total": 500
+      },
+      {
+        "id": "item_1787660077542",
+        "description": "logo",
+        "quantity": 1,
+        "unitPrice": 500,
+        "total": 500
+      }
+    ],
+    "subtotal": 1000,
+    "discount": 0,
+    "taxRate": 0,
+    "taxAmount": 0,
+    "total": 1000,
+    "paymentMethod": "Bank Transfer / Wise / Online Payment",
+    "notes": "Thank you for doing business with Scaleminte! Please send payment within the due date.",
+    "logoUrl": "http://localhost:5000/uploads/Logow-1787660047068-736827077.png",
+    "signatureUrl": "http://localhost:5000/uploads/sig-1787660012474-443261739.png",
+    "signerName": "Scaleminte Finance & Accounts",
+    "signerTitle": "Authorized Officer",
+    "companyName": "Scaleminte",
+    "companyAddress": "360° Creative & Digital Support Agency",
+    "companyEmail": "hello@scaleminte.com",
+    "companyPhone": "+1 (555) 019-2834",
+    "createdAt": "2026-08-25T12:14:41.889Z",
+    "updatedAt": "2026-08-25T12:15:15.325Z"
+  },
+  {
+    "id": "inv_1787659701488",
+    "invoiceNumber": "INV-2026-003",
+    "clientName": "Test",
+    "clientCompany": "loru",
+    "clientEmail": "loru@gmailcom",
+    "clientPhone": "01847852200",
+    "clientAddress": "Test",
+    "issueDate": "2026-08-25",
+    "dueDate": "2026-09-08",
+    "currency": "USD ($)",
+    "status": "Paid",
+    "items": [
+      {
+        "id": "item_1787659632478_1",
+        "description": "Digital Marketing & Design Services",
+        "quantity": 1,
+        "unitPrice": 500,
+        "total": 500
+      },
+      {
+        "id": "item_1787659687654",
+        "description": "logo",
+        "quantity": 1,
+        "unitPrice": 3000,
+        "total": 3000
+      }
+    ],
+    "subtotal": 3500,
+    "discount": 0,
+    "taxRate": 0,
+    "taxAmount": 0,
+    "total": 3500,
+    "paymentMethod": "Bank Transfer / Wise / Online Payment",
+    "notes": "Thank you for doing business with Scaleminte! Please send payment within the due date.",
+    "createdAt": "2026-08-25T12:08:21.502Z",
+    "updatedAt": "2026-08-25T12:20:57.121Z"
+  },
+  {
+    "id": "inv_1787659659386",
+    "invoiceNumber": "INV-2026-003",
+    "clientName": "Robert Vance",
+    "clientCompany": "Vance Refrigeration",
+    "clientEmail": "bob@vancerefrigeration.com",
+    "clientPhone": "+1 570 555 0199",
+    "clientAddress": "Scranton Business Park, PA",
+    "issueDate": "2026-08-25",
+    "dueDate": "2026-09-08",
+    "currency": "USD ($)",
+    "status": "Pending",
+    "items": [
+      {
+        "id": "it_1",
+        "description": "Brand Strategy & Commercial Video Editing",
+        "quantity": 2,
+        "unitPrice": 750,
+        "total": 1500
+      }
+    ],
+    "subtotal": 1500,
+    "discount": 100,
+    "taxRate": 0,
+    "taxAmount": 0,
+    "total": 1400,
+    "paymentMethod": "Wise / Bank Wire",
+    "notes": "Thank you for your business!",
+    "createdAt": "2026-08-25T12:07:39.386Z",
+    "updatedAt": "2026-08-25T12:07:39.386Z"
+  },
+  {
+    "id": "inv_1",
+    "invoiceNumber": "INV-2026-001",
+    "clientName": "Alex Morgan",
+    "clientCompany": "Nova Growth Ventures",
+    "clientEmail": "alex@novagrowth.com",
+    "clientPhone": "+1 (555) 234-5678",
+    "clientAddress": "742 Evergreen Terrace, San Francisco, CA 94107",
+    "issueDate": "2026-08-20",
+    "dueDate": "2026-09-04",
+    "currency": "USD ($)",
+    "status": "Paid",
+    "items": [
+      {
+        "id": "item_1",
+        "description": "Complete Brand Identity & Visual Guidelines",
+        "quantity": 1,
+        "unitPrice": 1200,
+        "total": 1200
+      },
+      {
+        "id": "item_2",
+        "description": "Next.js Web Application Design & Development",
+        "quantity": 1,
+        "unitPrice": 2500,
+        "total": 2500
+      },
+      {
+        "id": "item_3",
+        "description": "Meta & Google Ads Campaign Setup (First Month)",
+        "quantity": 1,
+        "unitPrice": 800,
+        "total": 800
+      }
+    ],
+    "subtotal": 4500,
+    "discount": 300,
+    "taxRate": 0,
+    "taxAmount": 0,
+    "total": 4200,
+    "paymentMethod": "Wise / Bank Wire Transfer (IBAN: US92SCALEMINTEC998822)",
+    "notes": "Thank you for partnering with Scaleminte! All deliverables and design source files have been handed over."
+  },
+  {
+    "id": "inv_2",
+    "invoiceNumber": "INV-2026-002",
+    "clientName": "Sarah Jenkins",
+    "clientCompany": "Aura Cosmetics Ltd",
+    "clientEmail": "sarah@auracosmetics.co",
+    "clientPhone": "+44 20 7946 0912",
+    "clientAddress": "221B Baker Street, London, NW1 6XE, UK",
+    "issueDate": "2026-08-24",
+    "dueDate": "2026-09-07",
+    "currency": "USD ($)",
+    "status": "Pending",
+    "items": [
+      {
+        "id": "item_1",
+        "description": "Social Media Content Creation (30 Posts + 10 Reels)",
+        "quantity": 1,
+        "unitPrice": 950,
+        "total": 950
+      },
+      {
+        "id": "item_2",
+        "description": "Product Packaging Box & Label Design (3 Variations)",
+        "quantity": 3,
+        "unitPrice": 200,
+        "total": 600
+      }
+    ],
+    "subtotal": 1550,
+    "discount": 0,
+    "taxRate": 0,
+    "taxAmount": 0,
+    "total": 1550,
+    "paymentMethod": "Stripe / Credit Card / Bank Transfer",
+    "notes": "Payment is due within 14 days of invoice issue date."
+  }
+]

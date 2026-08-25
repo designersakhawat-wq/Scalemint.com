@@ -1,0 +1,65 @@
+[
+  {
+    "id": "port_1",
+    "title": "EduTech App Rebrand",
+    "slug": "edutech-app-rebrand",
+    "category": "Graphic Design",
+    "image": "/images/startup.jpg",
+    "isFeatured": true,
+    "order": 1
+  },
+  {
+    "id": "port_2",
+    "title": "Brand Growth Strategy",
+    "slug": "brand-growth-strategy",
+    "category": "Social Media Management",
+    "image": "/images/storefront.jpg",
+    "isFeatured": true,
+    "order": 2
+  },
+  {
+    "id": "port_3",
+    "title": "Aurora & Co. E-commerce",
+    "slug": "aurora-co-ecommerce",
+    "category": "Web Development",
+    "image": "/images/ecommerce.jpg",
+    "isFeatured": true,
+    "order": 3
+  },
+  {
+    "id": "port_4",
+    "title": "Nexus Plaza Corporate",
+    "slug": "nexus-plaza-corporate",
+    "category": "Video Editing",
+    "image": "/images/corporate.jpg",
+    "isFeatured": true,
+    "order": 4
+  },
+  {
+    "id": "port_5",
+    "title": "Social Media Campaign",
+    "slug": "social-media-campaign",
+    "category": "Meta Ads",
+    "image": "/images/startup.jpg",
+    "isFeatured": true,
+    "order": 5
+  },
+  {
+    "id": "port_6",
+    "title": "Local Artisan Reach",
+    "slug": "local-artisan-reach",
+    "category": "Google Ads",
+    "image": "/images/storefront.jpg",
+    "isFeatured": false,
+    "order": 6
+  },
+  {
+    "id": "port_7",
+    "title": "Channel Optimization",
+    "slug": "channel-optimization",
+    "category": "YouTube Video SEO",
+    "image": "/images/corporate.jpg",
+    "isFeatured": false,
+    "order": 7
+  }
+]

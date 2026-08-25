@@ -14,6 +14,7 @@ import { defaultSettings } from "@/context/SiteConfigContext";
 function getDataDirs(): string[] {
   const dirs: string[] = [
     path.join(process.cwd(), "data"),
+    path.join(process.cwd(), "backend", "data"),
     path.join(process.cwd(), ".next", "standalone", "data"),
     path.join(process.cwd(), "..", "data"),
   ];

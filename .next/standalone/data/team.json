@@ -1,0 +1,154 @@
+[
+  {
+    "id": "team_1",
+    "slug": "md-sakhawat-hossain",
+    "name": "Md Sakhawat Hossain",
+    "role": "Senior Graphics Designer",
+    "img": "/images/team1.jpg",
+    "bio": "Md Sakhawat Hossain is a visionary Senior Graphics Designer with over a decade of experience in crafting compelling visual identities. He specializes in creating modern, minimalist, and highly effective design assets that elevate brands and drive engagement.",
+    "expertise": [
+      "Brand Identity Design",
+      "UI/UX Prototyping",
+      "Vector Illustration",
+      "Print Media",
+      "Advanced Typography"
+    ],
+    "tools": [
+      "Adobe Photoshop",
+      "Adobe Illustrator",
+      "Figma",
+      "CorelDRAW"
+    ],
+    "experience": [
+      {
+        "title": "Senior Graphics Designer",
+        "company": "Scaleminte",
+        "period": "2023 - Present"
+      },
+      {
+        "title": "Lead UI/UX Designer",
+        "company": "Creative Pixel Agency",
+        "period": "2020 - 2023"
+      },
+      {
+        "title": "test",
+        "company": "test",
+        "period": "2000"
+      }
+    ],
+    "education": [
+      {
+        "degree": "B.Sc in Graphic Design & Multimedia",
+        "institution": "National University of Design",
+        "year": "2019"
+      }
+    ],
+    "fiverrStatus": "Top Rated Seller",
+    "fiverrLink": "https://www.fiverr.com",
+    "facebookUrl": "https://facebook.com",
+    "linkedinUrl": "https://linkedin.com",
+    "order": 1,
+    "isActive": true,
+    "upworkStatus": "Top Rated Plus",
+    "upworkLink": "https://www.upwork.com"
+  },
+  {
+    "id": "team_2",
+    "slug": "shahariar-sovon",
+    "name": "Shahariar Sovon",
+    "role": "Digital Marketer Specialist",
+    "img": "/images/team2.jpg",
+    "bio": "Shahariar Sovon is an expert Digital Marketer Specialist known for his data-driven approach to scaling businesses online. From comprehensive SEO strategies to high-converting ad campaigns across Google and Meta platforms.",
+    "expertise": [
+      "SEO & SEM",
+      "Social Media Marketing",
+      "PPC Campaigns",
+      "Conversion Rate Optimization",
+      "Email Marketing Strategy"
+    ],
+    "tools": [
+      "Google Analytics",
+      "Facebook Ads Manager",
+      "SEMrush",
+      "Mailchimp"
+    ],
+    "experience": [
+      {
+        "title": "Digital Marketer Specialist",
+        "company": "Scaleminte",
+        "period": "2022 - Present"
+      },
+      {
+        "title": "SEO Strategist",
+        "company": "Growth Hub",
+        "period": "2019 - 2022"
+      }
+    ],
+    "education": [
+      {
+        "degree": "BBA in Marketing",
+        "institution": "City Business School",
+        "year": "2018"
+      }
+    ],
+    "fiverrStatus": "Level 2 Seller",
+    "fiverrLink": "https://www.fiverr.com",
+    "facebookUrl": "https://facebook.com",
+    "linkedinUrl": "https://linkedin.com",
+    "order": 2,
+    "isActive": true
+  },
+  {
+    "id": "team_3",
+    "slug": "billal-hossain-rakib",
+    "name": "Billal Hossain Rakib",
+    "role": "Video Editor & AI Content Expert",
+    "img": "http://localhost:5000/uploads/ChatGPTImageAug20202612_30_52AM3-1787655195183-800389264.png",
+    "bio": "Billal Hossain Rakib brings stories to life through dynamic video editing and cutting-edge AI content generation. He seamlessly blends traditional editing techniques with modern AI tools to produce high-retention content.",
+    "expertise": [
+      "Short-form Video Editing",
+      "AI Prompt Engineering",
+      "Motion Graphics",
+      "Audio Mixing",
+      "Content Strategy",
+      "xnxx Video Editor",
+      "OnlyFan"
+    ],
+    "tools": [
+      "Adobe Premiere Pro",
+      "After Effects",
+      "Midjourney",
+      "ChatGPT"
+    ],
+    "experience": [
+      {
+        "title": "Video Editor & AI Content Expert",
+        "company": "Scaleminte",
+        "period": "2023 - Present"
+      },
+      {
+        "title": "Freelance Video Editor",
+        "company": "Upwork",
+        "period": "2021 - 2023"
+      },
+      {
+        "title": "OnlyFan",
+        "company": "ponstar",
+        "period": "2026"
+      }
+    ],
+    "education": [
+      {
+        "degree": "Diploma in Film & Media Studies",
+        "institution": "Institute of Media Arts",
+        "year": "2021"
+      }
+    ],
+    "fiverrStatus": "Top Rated Seller",
+    "fiverrLink": "https://www.fiverr.com",
+    "facebookUrl": "https://facebook.com",
+    "linkedinUrl": "https://linkedin.com",
+    "order": 3,
+    "isActive": true
+  }
+]
