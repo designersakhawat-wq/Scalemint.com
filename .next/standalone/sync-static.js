@@ -28,6 +28,16 @@ const standaloneData = path.join(rootDir, '.next', 'standalone', 'data');
 const dataDir = path.join(rootDir, 'data');
 const backendData = path.join(rootDir, 'backend', 'data');
 
+const legacyCssNames = [
+  '2fqlap79qm-ko.css',
+  '34d-ngyreyj5y.css',
+  '3r6ko_omhd4dg.css',
+  '3wg_j6qboei5t.css',
+  'main.css',
+  'globals.css',
+  'style.css'
+];
+
 console.log('> Syncing Next.js static assets for production...');
 
 // 1. Clean public/_next if accidentally created to avoid Next.js build errors
@@ -47,21 +57,11 @@ if (fs.existsSync(nextStatic)) {
     path.join(rootDir, '.next', 'standalone', '.next', 'static', 'chunks'),
   ];
 
-  const legacyCssNames = [
-    '2fqlap79qm-ko.css',
-    '34d-ngyreyj5y.css',
-    '3r6ko_omhd4dg.css',
-    '3wg_j6qboei5t.css',
-    'main.css',
-    'globals.css',
-    'style.css'
-  ];
-
   for (const cDir of chunkDirs) {
     if (fs.existsSync(cDir)) {
-      const cssFiles = fs.readdirSync(cDir).filter((f) => f.endsWith('.css') && !legacyCssNames.includes(f));
-      if (cssFiles.length > 0) {
-        const sourceCss = path.join(cDir, cssFiles[0]);
+      const allCss = fs.readdirSync(cDir).filter((f) => f.endsWith('.css'));
+      if (allCss.length > 0) {
+        const sourceCss = path.join(cDir, allCss[0]);
         for (const legacyName of legacyCssNames) {
           const destCss = path.join(cDir, legacyName);
           if (!fs.existsSync(destCss)) {
@@ -88,7 +88,29 @@ if (fs.existsSync(dataDir)) {
   console.log('✓ Synced data directories across standalone and backend');
 }
 
-// 6. Copy server.js & .htaccess & start.cjs to standalone
+// 6. Sync out directory if it exists (for static hosting in public_html)
+const outDir = path.join(rootDir, 'out');
+if (fs.existsSync(outDir)) {
+  const outStaticChunks = path.join(outDir, '_next', 'static', 'chunks');
+  if (fs.existsSync(outStaticChunks)) {
+    const allCss = fs.readdirSync(outStaticChunks).filter((f) => f.endsWith('.css'));
+    if (allCss.length > 0) {
+      const sourceCss = path.join(outStaticChunks, allCss[0]);
+      for (const legacyName of legacyCssNames) {
+        const destCss = path.join(outStaticChunks, legacyName);
+        if (!fs.existsSync(destCss)) {
+          fs.copyFileSync(sourceCss, destCss);
+        }
+      }
+      console.log('✓ Created legacy CSS fallback aliases in out/_next/static/chunks');
+    }
+  }
+  const outHtaccess = path.join(outDir, '.htaccess');
+  fs.copyFileSync(path.join(rootDir, '.htaccess'), outHtaccess);
+  console.log('✓ Synced .htaccess -> out/.htaccess');
+}
+
+// 7. Copy server.js & .htaccess & start.cjs to standalone
 const filesToSync = ['server.js', '.htaccess', 'start.cjs'];
 for (const file of filesToSync) {
   const srcFile = path.join(rootDir, file);

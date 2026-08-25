@@ -55,3 +55,11 @@
     transform: translateX(0);
   }
 }
+
+/* Ensure all AOS animated sections are always 100% visible */
+[data-aos] {
+  opacity: 1 !important;
+  transform: none !important;
+  visibility: visible !important;
+}
+
