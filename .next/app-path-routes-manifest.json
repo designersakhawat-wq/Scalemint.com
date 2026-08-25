@@ -3,6 +3,7 @@
   "/_not-found/page": "/_not-found",
   "/about-us/page": "/about-us",
   "/admin/page": "/admin",
+  "/api/v1/[...route]/route": "/api/v1/[...route]",
   "/blogs/page": "/blogs",
   "/contact-us/page": "/contact-us",
   "/favicon.ico/route": "/favicon.ico",

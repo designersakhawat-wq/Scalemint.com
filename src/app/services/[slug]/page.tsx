@@ -207,24 +207,30 @@ const fallbackServiceData: Record<string, any> = {
   }
 };
 
-async function getService(slug: string) {
-  try {
-    const res = await fetch(`${API_BASE_URL}/services/${slug}`, { cache: "no-store" });
-    if (res.ok) {
-      const data = await res.json();
-      if (data.success && data.data) return data.data;
-    }
-  } catch {}
+import { initialServices } from "@/data/initialData";
+import { getCollection } from "@/lib/serverStore";
 
-  // Fallback match by key or slug
+async function getService(slug: string) {
+  const services = getCollection<any[]>("services.json", initialServices);
+  const found = services.find(
+    (s: any) =>
+      s.slug === slug ||
+      s.id === slug ||
+      s.title?.toLowerCase().replace(/[^a-z0-9]+/g, "-") === slug
+  );
+  if (found) return found;
+
   const fallback = fallbackServiceData[slug];
   if (fallback) return fallback;
 
-  // Try finding in values
-  const match = Object.values(fallbackServiceData).find(
-    (s: any) => s.slug === slug || s.title?.toLowerCase().replace(/\s+/g, "-") === slug
-  );
-  return match || null;
+  return null;
+}
+
+export async function generateStaticParams() {
+  const services = getCollection<any[]>("services.json", initialServices);
+  return services.map((s: any) => ({
+    slug: s.slug || s.id,
+  }));
 }
 
 export default async function ServicePage({ params }: { params: Promise<{ slug: string }> }) {
@@ -478,18 +484,5 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
       </section>
     </main>
   );
-}
-
-export function generateStaticParams() {
-  return [
-    { slug: "google-ads" },
-    { slug: "meta-ads" },
-    { slug: "social-media-management" },
-    { slug: "video-editing" },
-    { slug: "graphic-design" },
-    { slug: "web-development" },
-    { slug: "seo-optimization" },
-    { slug: "email-marketing" },
-  ];
 }
 

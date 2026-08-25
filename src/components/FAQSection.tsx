@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useSiteConfig } from "@/context/SiteConfigContext";
+import { initialFaqs } from "@/data/initialData";
 import { API_BASE_URL } from "@/lib/api";
 
 export interface FAQItem {
@@ -10,44 +11,71 @@ export interface FAQItem {
   answer: string;
 }
 
-const defaultFaqs: FAQItem[] = [
-  {
-    id: "faq_1",
-    question: "How Quickly Can We Launch Our Marketing Campaign?",
-    answer: "Most digital marketing and advertising campaigns are strategized, configured, and launched within 3 to 7 business days following our initial kickoff call and asset collection."
-  },
-  {
-    id: "faq_2",
-    question: "Do You Provide Transparent Weekly Reports?",
-    answer: "Absolutely. We provide real-time dashboard access alongside structured weekly and monthly performance analysis detailing ROI, CPA, conversions, and revenue impact."
-  },
-  {
-    id: "faq_3",
-    question: "Can I Customize Or Upgrade My Package Anytime?",
-    answer: "Yes, you can easily scale up, downgrade, or request custom deliverables anytime as your business requirements evolve."
-  },
-  {
-    id: "faq_4",
-    question: "Do You Handle Everything For Me?",
-    answer: "Yes! We offer end-to-end digital marketing and design solutions, so you can focus on running your business while we handle the creative and technical work."
-  }
-];
-
 export default function FAQSection() {
   const { settings } = useSiteConfig();
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const [faqs, setFaqs] = useState<FAQItem[]>(defaultFaqs);
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [faqs, setFaqs] = useState<FAQItem[]>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("scaleminte_faqs");
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        } catch {}
+      }
+    }
+    return initialFaqs;
+  });
 
-  useEffect(() => {
-    fetch(`${API_BASE_URL}/faqs`)
-      .then((res) => res.json())
-      .then((data) => {
+  const fetchFaqs = useCallback(async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/faqs`, { cache: "no-store" });
+      if (res.ok) {
+        const data = await res.json();
         if (data.success && Array.isArray(data.data) && data.data.length > 0) {
           setFaqs(data.data);
+          if (typeof window !== "undefined") {
+            localStorage.setItem("scaleminte_faqs", JSON.stringify(data.data));
+          }
         }
-      })
-      .catch(() => {});
+      }
+    } catch {
+      if (typeof window !== "undefined") {
+        const saved = localStorage.getItem("scaleminte_faqs");
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed)) setFaqs(parsed);
+          } catch {}
+        }
+      }
+    }
   }, []);
+
+  useEffect(() => {
+    fetchFaqs();
+
+    const handleUpdate = () => {
+      fetchFaqs();
+      if (typeof window !== "undefined") {
+        const saved = localStorage.getItem("scaleminte_faqs");
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed)) setFaqs(parsed);
+          } catch {}
+        }
+      }
+    };
+
+    window.addEventListener("scaleminte_faqs_updated", handleUpdate);
+    window.addEventListener("storage", handleUpdate);
+
+    return () => {
+      window.removeEventListener("scaleminte_faqs_updated", handleUpdate);
+      window.removeEventListener("storage", handleUpdate);
+    };
+  }, [fetchFaqs]);
 
   const faqImage = settings.faqSection?.image || "/images/corporate.jpg";
   const headline = settings.faqSection?.headline || "Frequently Asked Questions";
@@ -58,69 +86,57 @@ export default function FAQSection() {
       <div className="max-w-7xl mx-auto flex flex-col-reverse lg:flex-row gap-16 items-start">
         
         {/* Left Column: FAQ Accordion */}
-        <div className="flex-1 w-full space-y-4">
-          {faqs.map((faq, idx) => (
-            <div 
-              key={faq.id || idx} 
-              data-aos="fade-up"
-              data-aos-delay={idx * 100}
-              className="border border-white/10 rounded-3xl bg-[#0a0f2c] overflow-hidden transition-all duration-300 shadow-sm"
-            >
-              <button 
-                className="w-full px-8 py-5 flex items-center justify-between text-left focus:outline-none cursor-pointer"
-                onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
-              >
-                <div className="flex items-center gap-4">
-                  <span className="text-xl font-light text-brand-electric">{openIndex === idx ? "-" : "+"}</span>
-                  <span className="font-semibold text-lg text-white">{faq.question}</span>
+        <div className="lg:w-3/5 w-full flex flex-col justify-center">
+          <div className="space-y-4">
+            {faqs.map((faq, idx) => {
+              const isOpen = openIndex === idx;
+              return (
+                <div 
+                  key={faq.id || idx}
+                  className={`border border-white/10 rounded-2xl p-6 transition-all duration-300 ${
+                    isOpen ? "bg-white/5 border-brand-electric/40 shadow-[0_0_20px_rgba(27,67,255,0.15)]" : "hover:bg-white/[0.02]"
+                  }`}
+                >
+                  <button
+                    onClick={() => setOpenIndex(isOpen ? null : idx)}
+                    className="w-full flex items-center justify-between text-left font-bold text-lg md:text-xl text-white gap-4 cursor-pointer"
+                  >
+                    <span>{faq.question}</span>
+                    <div className={`w-8 h-8 rounded-full bg-white/5 flex items-center justify-center shrink-0 transition-transform duration-300 ${isOpen ? "rotate-180 bg-brand-electric text-white" : "text-slate-400"}`}>
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </button>
+                  {isOpen && (
+                    <div className="mt-4 pt-4 border-t border-white/10 text-slate-300 leading-relaxed text-base">
+                      {faq.answer}
+                    </div>
+                  )}
                 </div>
-              </button>
-              
-              <div 
-                className={`px-8 overflow-hidden transition-all duration-300 ease-in-out ${
-                  openIndex === idx ? "max-h-60 pb-6 opacity-100" : "max-h-0 opacity-0"
-                }`}
-              >
-                <p className="text-slate-400 pl-8 leading-relaxed">
-                  {faq.answer}
-                </p>
-              </div>
-            </div>
-          ))}
+              );
+            })}
+          </div>
         </div>
 
-        {/* Right Column: Text & Image */}
-        <div data-aos="fade-left" className="flex-1 w-full">
-          <p className="text-sm font-bold uppercase tracking-widest mb-4 text-brand-electric">( FAQ&apos;S )</p>
-          <h2 className="text-5xl md:text-6xl font-bold leading-tight mb-4 text-white">
-            {headline} <br />
-            <span className="bg-brand-electric text-white px-4 py-1 mt-2 inline-block rounded-lg shadow-[0_0_20px_rgba(27,67,255,0.4)]">
-              {settings.siteName || "Scaleminte"}
-            </span>
+        {/* Right Column: Title & Image */}
+        <div className="lg:w-2/5 w-full flex flex-col">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-electric/10 border border-brand-electric/20 text-sky-400 text-xs font-bold uppercase tracking-wider mb-6 w-fit shadow-[0_0_15px_rgba(27,67,255,0.2)]">
+            <span>Support & Clarity</span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-6 leading-tight">
+            {headline}
           </h2>
-          <p className="text-slate-400 mb-10 text-lg">
+          <p className="text-slate-400 text-lg mb-8 leading-relaxed">
             {subtitle}
           </p>
-
-          <div className="relative rounded-3xl overflow-hidden aspect-[16/9] shadow-2xl mt-8 border border-white/10 bg-slate-900">
+          <div className="w-full aspect-[4/3] rounded-3xl overflow-hidden relative shadow-2xl border border-white/10 group">
             <img 
               src={faqImage} 
-              alt="Scaleminte FAQ Banner" 
-              className="w-full h-full object-cover"
+              alt="FAQ Support" 
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
-            
-            {/* Floating Contact Card */}
-            <div className="absolute bottom-6 left-6 bg-[#0a0f2c]/90 backdrop-blur-md text-white rounded-2xl p-4 flex items-center gap-4 shadow-[0_0_30px_rgba(0,0,0,0.5)] border border-white/10">
-              <div className="w-12 h-12 rounded-full bg-brand-electric flex items-center justify-center shrink-0">
-                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
-              </div>
-              <div>
-                <h4 className="font-bold text-lg leading-tight">Contact Us Now!</h4>
-                <p className="text-slate-400 text-sm">{settings.contactEmail || "hello@scaleminte.com"}</p>
-              </div>
-            </div>
+            <div className="absolute inset-0 bg-gradient-to-t from-[#040822] via-transparent to-transparent opacity-60"></div>
           </div>
         </div>
 

@@ -23,6 +23,14 @@
   },
   "dynamicRoutes": [
     {
+      "page": "/api/v1/[...route]",
+      "regex": "^/api/v1/(.+?)(?:/)?$",
+      "routeKeys": {
+        "nxtProute": "nxtProute"
+      },
+      "namedRegex": "^/api/v1/(?<nxtProute>.+?)(?:/)?$"
+    },
+    {
       "page": "/services/[slug]",
       "regex": "^/services/([^/]+?)(?:/)?$",
       "routeKeys": {

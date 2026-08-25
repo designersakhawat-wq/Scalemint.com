@@ -550,8 +550,10 @@ export default function AdminDashboardPage() {
 
   // --- FAQs CRUD with confirmation ---
   const saveFaq = async (item: any) => {
+    let updated: any[];
     if (item.id) {
-      setFaqs((prev) => prev.map((f) => (f.id === item.id ? item : f)));
+      updated = faqs.map((f) => (f.id === item.id ? item : f));
+      setFaqs(updated);
       await fetch(`${API_BASE_URL}/faqs/${item.id}`, {
         method: "PUT",
         headers: getAuthHeaders(),
@@ -559,12 +561,17 @@ export default function AdminDashboardPage() {
       }).catch(() => {});
     } else {
       const newFaq = { ...item, id: `faq_${Date.now()}` };
-      setFaqs((prev) => [...prev, newFaq]);
+      updated = [...faqs, newFaq];
+      setFaqs(updated);
       await fetch(`${API_BASE_URL}/faqs`, {
         method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify(newFaq),
       }).catch(() => {});
+    }
+    if (typeof window !== "undefined") {
+      localStorage.setItem("scaleminte_faqs", JSON.stringify(updated));
+      window.dispatchEvent(new Event("scaleminte_faqs_updated"));
     }
     setModalType(null);
     setSaveSuccessMessage("FAQ saved successfully!");
@@ -573,7 +580,12 @@ export default function AdminDashboardPage() {
 
   const deleteFaq = (id: string, question: string) => {
     requestDeleteConfirm(`Delete FAQ: "${question}"?`, "This question will be removed from the FAQ accordion.", async () => {
-      setFaqs((prev) => prev.filter((f) => f.id !== id));
+      const updated = faqs.filter((f) => f.id !== id);
+      setFaqs(updated);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("scaleminte_faqs", JSON.stringify(updated));
+        window.dispatchEvent(new Event("scaleminte_faqs_updated"));
+      }
       await fetch(`${API_BASE_URL}/faqs/${id}`, {
         method: "DELETE",
         headers: getAuthHeaders(),
@@ -585,8 +597,10 @@ export default function AdminDashboardPage() {
 
   // --- Package Customizer CRUD ---
   const savePackage = async (item: any) => {
+    let updated: any[];
     if (item.id) {
-      setPackages((prev) => prev.map((p) => (p.id === item.id ? item : p)));
+      updated = packages.map((p) => (p.id === item.id ? item : p));
+      setPackages(updated);
       await fetch(`${API_BASE_URL}/packages/${item.id}`, {
         method: "PUT",
         headers: getAuthHeaders(),
@@ -594,12 +608,17 @@ export default function AdminDashboardPage() {
       }).catch(() => {});
     } else {
       const newPkg = { ...item, id: `pkg_${Date.now()}` };
-      setPackages((prev) => [...prev, newPkg]);
+      updated = [...packages, newPkg];
+      setPackages(updated);
       await fetch(`${API_BASE_URL}/packages`, {
         method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify(newPkg),
       }).catch(() => {});
+    }
+    if (typeof window !== "undefined") {
+      localStorage.setItem("scaleminte_packages", JSON.stringify(updated));
+      window.dispatchEvent(new Event("scaleminte_packages_updated"));
     }
     setModalType(null);
     setSaveSuccessMessage("Pricing package saved!");
@@ -608,7 +627,12 @@ export default function AdminDashboardPage() {
 
   const deletePackage = (id: string, name: string) => {
     requestDeleteConfirm(`Delete Package "${name}"?`, "This package will be removed from pricing options.", async () => {
-      setPackages((prev) => prev.filter((p) => p.id !== id));
+      const updated = packages.filter((p) => p.id !== id);
+      setPackages(updated);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("scaleminte_packages", JSON.stringify(updated));
+        window.dispatchEvent(new Event("scaleminte_packages_updated"));
+      }
       await fetch(`${API_BASE_URL}/packages/${id}`, {
         method: "DELETE",
         headers: getAuthHeaders(),
@@ -619,8 +643,10 @@ export default function AdminDashboardPage() {
   };
 
   const saveBlog = async (item: any) => {
+    let updated: any[];
     if (item.id) {
-      setBlogs((prev) => prev.map((b) => (b.id === item.id ? item : b)));
+      updated = blogs.map((b) => (b.id === item.id ? item : b));
+      setBlogs(updated);
       await fetch(`${API_BASE_URL}/blogs/${item.id}`, {
         method: "PUT",
         headers: getAuthHeaders(),
@@ -628,12 +654,17 @@ export default function AdminDashboardPage() {
       }).catch(() => {});
     } else {
       const newBlog = { ...item, id: `blog_${Date.now()}`, views: 0, publishedAt: new Date().toISOString() };
-      setBlogs((prev) => [newBlog, ...prev]);
+      updated = [newBlog, ...blogs];
+      setBlogs(updated);
       await fetch(`${API_BASE_URL}/blogs`, {
         method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify(newBlog),
       }).catch(() => {});
+    }
+    if (typeof window !== "undefined") {
+      localStorage.setItem("scaleminte_blogs", JSON.stringify(updated));
+      window.dispatchEvent(new Event("scaleminte_blogs_updated"));
     }
     setModalType(null);
     setSaveSuccessMessage("Blog article saved!");
@@ -642,7 +673,12 @@ export default function AdminDashboardPage() {
 
   const deleteBlog = (id: string, title: string) => {
     requestDeleteConfirm(`Delete Article "${title}"?`, "This article will be permanently removed.", async () => {
-      setBlogs((prev) => prev.filter((item) => item.id !== id));
+      const updated = blogs.filter((item) => item.id !== id);
+      setBlogs(updated);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("scaleminte_blogs", JSON.stringify(updated));
+        window.dispatchEvent(new Event("scaleminte_blogs_updated"));
+      }
       await fetch(`${API_BASE_URL}/blogs/${id}`, {
         method: "DELETE",
         headers: getAuthHeaders(),
@@ -653,8 +689,10 @@ export default function AdminDashboardPage() {
   };
 
   const saveService = async (item: any) => {
+    let updated: any[];
     if (item.id) {
-      setServices((prev) => prev.map((s) => (s.id === item.id ? item : s)));
+      updated = services.map((s) => (s.id === item.id ? item : s));
+      setServices(updated);
       await fetch(`${API_BASE_URL}/services/${item.id}`, {
         method: "PUT",
         headers: getAuthHeaders(),
@@ -662,12 +700,17 @@ export default function AdminDashboardPage() {
       }).catch(() => {});
     } else {
       const newSrv = { ...item, id: `srv_${Date.now()}`, isActive: true };
-      setServices((prev) => [...prev, newSrv]);
+      updated = [...services, newSrv];
+      setServices(updated);
       await fetch(`${API_BASE_URL}/services`, {
         method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify(newSrv),
       }).catch(() => {});
+    }
+    if (typeof window !== "undefined") {
+      localStorage.setItem("scaleminte_services", JSON.stringify(updated));
+      window.dispatchEvent(new Event("scaleminte_services_updated"));
     }
     setModalType(null);
     setSaveSuccessMessage("Service offering saved!");
@@ -676,7 +719,12 @@ export default function AdminDashboardPage() {
 
   const deleteService = (id: string, title: string) => {
     requestDeleteConfirm(`Delete Service "${title}"?`, "This service will be removed from your catalog.", async () => {
-      setServices((prev) => prev.filter((s) => s.id !== id));
+      const updated = services.filter((s) => s.id !== id);
+      setServices(updated);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("scaleminte_services", JSON.stringify(updated));
+        window.dispatchEvent(new Event("scaleminte_services_updated"));
+      }
       await fetch(`${API_BASE_URL}/services/${id}`, {
         method: "DELETE",
         headers: getAuthHeaders(),
@@ -687,8 +735,10 @@ export default function AdminDashboardPage() {
   };
 
   const savePortfolio = async (item: any) => {
+    let updated: any[];
     if (item.id) {
-      setPortfolio((prev) => prev.map((p) => (p.id === item.id ? item : p)));
+      updated = portfolio.map((p) => (p.id === item.id ? item : p));
+      setPortfolio(updated);
       await fetch(`${API_BASE_URL}/portfolio/${item.id}`, {
         method: "PUT",
         headers: getAuthHeaders(),
@@ -696,12 +746,17 @@ export default function AdminDashboardPage() {
       }).catch(() => {});
     } else {
       const newPort = { ...item, id: `port_${Date.now()}` };
-      setPortfolio((prev) => [...prev, newPort]);
+      updated = [newPort, ...portfolio];
+      setPortfolio(updated);
       await fetch(`${API_BASE_URL}/portfolio`, {
         method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify(newPort),
       }).catch(() => {});
+    }
+    if (typeof window !== "undefined") {
+      localStorage.setItem("scaleminte_portfolio", JSON.stringify(updated));
+      window.dispatchEvent(new Event("scaleminte_portfolio_updated"));
     }
     setModalType(null);
     setSaveSuccessMessage("Portfolio project saved!");
@@ -710,7 +765,12 @@ export default function AdminDashboardPage() {
 
   const deletePortfolio = (id: string, title: string) => {
     requestDeleteConfirm(`Delete Project "${title}"?`, "This project will be removed from portfolio showcase.", async () => {
-      setPortfolio((prev) => prev.filter((item) => item.id !== id));
+      const updated = portfolio.filter((item) => item.id !== id);
+      setPortfolio(updated);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("scaleminte_portfolio", JSON.stringify(updated));
+        window.dispatchEvent(new Event("scaleminte_portfolio_updated"));
+      }
       await fetch(`${API_BASE_URL}/portfolio/${id}`, {
         method: "DELETE",
         headers: getAuthHeaders(),
@@ -721,8 +781,10 @@ export default function AdminDashboardPage() {
   };
 
   const saveTeam = async (item: any) => {
+    let updated: any[];
     if (item.id) {
-      setTeam((prev) => prev.map((t) => (t.id === item.id ? item : t)));
+      updated = team.map((t) => (t.id === item.id ? item : t));
+      setTeam(updated);
       await fetch(`${API_BASE_URL}/team/${item.id}`, {
         method: "PUT",
         headers: getAuthHeaders(),
@@ -730,15 +792,18 @@ export default function AdminDashboardPage() {
       }).catch(() => {});
     } else {
       const newTeam = { ...item, id: `team_${Date.now()}` };
-      setTeam((prev) => [...prev, newTeam]);
+      updated = [...team, newTeam];
+      setTeam(updated);
       await fetch(`${API_BASE_URL}/team`, {
         method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify(newTeam),
       }).catch(() => {});
     }
-    localStorage.setItem("scaleminte_team_cache_update", Date.now().toString());
-    window.dispatchEvent(new Event("scaleminte_team_updated"));
+    if (typeof window !== "undefined") {
+      localStorage.setItem("scaleminte_team", JSON.stringify(updated));
+      window.dispatchEvent(new Event("scaleminte_team_updated"));
+    }
     setModalType(null);
     setSaveSuccessMessage("Team member profile saved!");
     setTimeout(() => setSaveSuccessMessage(""), 4000);
@@ -746,13 +811,16 @@ export default function AdminDashboardPage() {
 
   const deleteTeam = (id: string, name: string) => {
     requestDeleteConfirm(`Delete Team Member "${name}"?`, "This profile will be removed from team section.", async () => {
-      setTeam((prev) => prev.filter((item) => item.id !== id));
+      const updated = team.filter((item) => item.id !== id && item.slug !== id);
+      setTeam(updated);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("scaleminte_team", JSON.stringify(updated));
+        window.dispatchEvent(new Event("scaleminte_team_updated"));
+      }
       await fetch(`${API_BASE_URL}/team/${id}`, {
         method: "DELETE",
         headers: getAuthHeaders(),
       }).catch(() => {});
-      localStorage.setItem("scaleminte_team_cache_update", Date.now().toString());
-      window.dispatchEvent(new Event("scaleminte_team_updated"));
       setSaveSuccessMessage("Team member deleted!");
       setTimeout(() => setSaveSuccessMessage(""), 4000);
     });
@@ -775,8 +843,10 @@ export default function AdminDashboardPage() {
       total,
     };
 
+    let updated: any[];
     if (item.id && !item.id.startsWith("inv_draft_")) {
-      setInvoices((prev) => prev.map((inv) => (inv.id === item.id ? invoiceToSave : inv)));
+      updated = invoices.map((inv) => (inv.id === item.id ? invoiceToSave : inv));
+      setInvoices(updated);
       await fetch(`${API_BASE_URL}/invoices/${item.id}`, {
         method: "PUT",
         headers: getAuthHeaders(),
@@ -788,12 +858,17 @@ export default function AdminDashboardPage() {
         id: `inv_${Date.now()}`,
         invoiceNumber: item.invoiceNumber || `INV-${new Date().getFullYear()}-${String(invoices.length + 1).padStart(3, "0")}`,
       };
-      setInvoices((prev) => [newInv, ...prev]);
+      updated = [newInv, ...invoices];
+      setInvoices(updated);
       await fetch(`${API_BASE_URL}/invoices`, {
         method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify(newInv),
       }).catch(() => {});
+    }
+    if (typeof window !== "undefined") {
+      localStorage.setItem("scaleminte_invoices", JSON.stringify(updated));
+      window.dispatchEvent(new Event("scaleminte_invoices_updated"));
     }
     setModalType(null);
     setSaveSuccessMessage("Client invoice saved successfully!");
@@ -802,7 +877,12 @@ export default function AdminDashboardPage() {
 
   const deleteInvoice = (id: string, invoiceNumber: string) => {
     requestDeleteConfirm(`Delete Invoice "${invoiceNumber}"?`, "This client invoice will be permanently removed.", async () => {
-      setInvoices((prev) => prev.filter((item) => item.id !== id));
+      const updated = invoices.filter((item) => item.id !== id);
+      setInvoices(updated);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("scaleminte_invoices", JSON.stringify(updated));
+        window.dispatchEvent(new Event("scaleminte_invoices_updated"));
+      }
       await fetch(`${API_BASE_URL}/invoices/${id}`, {
         method: "DELETE",
         headers: getAuthHeaders(),
@@ -813,9 +893,14 @@ export default function AdminDashboardPage() {
   };
 
   const toggleInvoiceStatus = async (invoice: any) => {
-    const nextStatus = invoice.status === "Paid" ? "Pending" : "Paid";
-    const updated = { ...invoice, status: nextStatus };
-    setInvoices((prev) => prev.map((i) => (i.id === invoice.id ? updated : i)));
+    const nextStatus = invoice.status === "Paid" || invoice.status === "PAID" ? "PENDING" : "PAID";
+    const updatedInv = { ...invoice, status: nextStatus };
+    const updated = invoices.map((i) => (i.id === invoice.id ? updatedInv : i));
+    setInvoices(updated);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("scaleminte_invoices", JSON.stringify(updated));
+      window.dispatchEvent(new Event("scaleminte_invoices_updated"));
+    }
     await fetch(`${API_BASE_URL}/invoices/${invoice.id}`, {
       method: "PUT",
       headers: getAuthHeaders(),

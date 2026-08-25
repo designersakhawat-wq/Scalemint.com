@@ -1,20 +1,20 @@
 import React from "react";
 import Navbar from "@/components/Navbar";
-import { teamData } from "@/data/team";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { API_BASE_URL } from "@/lib/api";
+import { initialTeam } from "@/data/initialData";
+import { getCollection } from "@/lib/serverStore";
+
+export async function generateStaticParams() {
+  const team = getCollection<any[]>("team.json", initialTeam);
+  return team.map((m: any) => ({
+    slug: m.slug || m.id,
+  }));
+}
 
 async function getMemberData(slug: string) {
-  try {
-    const res = await fetch(`${API_BASE_URL}/team/${slug}`, { cache: "no-store" });
-    if (res.ok) {
-      const json = await res.json();
-      if (json.success && json.data) return json.data;
-    }
-  } catch {}
-
-  const found = teamData.find((m: any) => m.slug === slug || m.id === slug);
+  const team = getCollection<any[]>("team.json", initialTeam);
+  const found = team.find((m: any) => m.slug === slug || m.id === slug);
   return found || null;
 }
 
@@ -224,14 +224,5 @@ export default async function TeamMemberPage({ params }: { params: Promise<{ slu
       </div>
     </main>
   );
-}
-
-export function generateStaticParams() {
-  return [
-    { slug: "sakhawat-hossain" },
-    { slug: "ferdus-hasan" },
-    { slug: "tania-akter" },
-    { slug: "arif-hossain" },
-  ];
 }
 
