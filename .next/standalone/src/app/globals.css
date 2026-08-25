@@ -56,10 +56,21 @@
   }
 }
 
-/* Ensure all AOS animated sections are always 100% visible */
-[data-aos] {
+/* Ensure all animated sections are always 100% visible */
+[data-aos], 
+[data-aos^="fade"], 
+[data-aos^="zoom"], 
+[data-aos^="slide"], 
+[data-aos^="flip"],
+[data-aos="fade-up"],
+[data-aos="fade-down"],
+[data-aos="fade-left"],
+[data-aos="fade-right"],
+[data-aos="zoom-in"],
+[data-aos="zoom-out"] {
   opacity: 1 !important;
   transform: none !important;
   visibility: visible !important;
 }
+
 
