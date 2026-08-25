@@ -4,15 +4,20 @@ import React from "react";
 import Navbar from "@/components/Navbar";
 import { useSiteConfig } from "@/context/SiteConfigContext";
 
+const defaultContent = `1. Information We Collect\nWe collect information you provide directly to us when contacting our agency, requesting quotes, or signing up for consultations.\n\n2. How We Use Information\nWe use information to provide our services, process requests, improve client experience, and communicate strategy updates.\n\n3. Data Protection & Security\nWe employ industry-standard encryption and security protocols to safeguard your personal data and business information from unauthorized access.\n\n4. Contact Us About Privacy\nIf you have questions about this policy, please reach out to us at our official contact email.`;
+
 export default function PrivacyPolicyPage() {
   const { settings } = useSiteConfig();
-  const privacy = settings.legalPages?.privacyPolicy || {
+  const privacy = settings?.legalPages?.privacyPolicy || {
     title: "Privacy Policy",
     lastUpdated: "October 2026",
-    content: `1. Information We Collect\nWe collect information you provide directly to us when contacting our agency, requesting quotes, or signing up for consultations.\n\n2. How We Use Information\nWe use information to provide our services, process requests, improve client experience, and communicate strategy updates.\n\n3. Data Protection & Security\nWe employ industry-standard encryption and security protocols to safeguard your personal data and business information from unauthorized access.\n\n4. Contact Us About Privacy\nIf you have questions about this policy, please reach out to us at our official contact email.`
+    content: defaultContent,
   };
 
-  const paragraphs = privacy.content.split("\n\n");
+  const title = privacy?.title || "Privacy Policy";
+  const lastUpdated = privacy?.lastUpdated || "October 2026";
+  const contentStr = typeof privacy?.content === "string" && privacy.content.trim().length > 0 ? privacy.content : defaultContent;
+  const paragraphs = contentStr.split("\n\n");
 
   return (
     <main className="min-h-screen bg-[#040822]">
@@ -20,10 +25,10 @@ export default function PrivacyPolicyPage() {
       
       <div className="pt-40 pb-32 px-8 max-w-4xl mx-auto">
         <h1 data-aos="fade-up" className="text-4xl md:text-6xl font-bold text-white mb-4">
-          {privacy.title}
+          {title}
         </h1>
         <p data-aos="fade-up" data-aos-delay="100" className="text-white/60 mb-12">
-          Last Updated: {privacy.lastUpdated}
+          Last Updated: {lastUpdated}
         </p>
         
         <div data-aos="fade-up" data-aos-delay="200" className="space-y-6">

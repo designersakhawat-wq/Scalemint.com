@@ -1,13 +1,14 @@
 var R=require("../../chunks/ssr/[turbopack]_runtime.js")("server/app/privacy-policy/page.js")
-R.c("server/chunks/ssr/[root-of-the-server]__1gvxiu0._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__17me3l9._.js")
 R.c("server/chunks/ssr/node_modules_next_dist_1n3w9lb._.js")
-R.c("server/chunks/ssr/[root-of-the-server]__06kwfyb._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__0bwdp68._.js")
 R.c("server/chunks/ssr/[root-of-the-server]__0xpcv9w._.js")
 R.c("server/chunks/ssr/[root-of-the-server]__20oky0c._.js")
+R.c("server/chunks/ssr/src_app_error_tsx_1gs2ol2._.js")
 R.c("server/chunks/ssr/node_modules_next_dist_client_components_0wpq8j3._.js")
 R.c("server/chunks/ssr/node_modules_next_dist_client_components_builtin_forbidden_0symwr9.js")
 R.c("server/chunks/ssr/node_modules_next_dist_client_components_builtin_unauthorized_0l_sp0x.js")
 R.c("server/chunks/ssr/node_modules_next_dist_client_components_builtin_global-error_0q-w892.js")
 R.c("server/chunks/ssr/_next-internal_server_app_privacy-policy_page_actions_0zb6o_b.js")
-R.m(60095)
-module.exports=R.m(60095).exports
+R.m(67830)
+module.exports=R.m(67830).exports

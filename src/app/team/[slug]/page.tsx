@@ -8,13 +8,13 @@ import { getCollection } from "@/lib/serverStore";
 export async function generateStaticParams() {
   const team = getCollection<any[]>("team.json", initialTeam);
   return team.map((m: any) => ({
-    slug: m.slug || m.id,
+    slug: m?.slug || m?.id || "member",
   }));
 }
 
 async function getMemberData(slug: string) {
   const team = getCollection<any[]>("team.json", initialTeam);
-  const found = team.find((m: any) => m.slug === slug || m.id === slug);
+  const found = team.find((m: any) => m?.slug === slug || m?.id === slug);
   return found || null;
 }
 
@@ -26,34 +26,38 @@ export default async function TeamMemberPage({ params }: { params: Promise<{ slu
     notFound();
   }
 
+  const memberName = member?.name || "Team Member";
+  const memberFirstName = memberName.split(" ")[0] || "Member";
+  const memberRole = member?.role || "Specialist";
+
   const socials = {
-    facebook: member.facebookUrl || member.socials?.facebook || "https://facebook.com",
-    linkedin: member.linkedinUrl || member.socials?.linkedin || "https://linkedin.com",
+    facebook: member?.facebookUrl || member?.socials?.facebook || "https://facebook.com",
+    linkedin: member?.linkedinUrl || member?.socials?.linkedin || "https://linkedin.com",
   };
 
   const fiverr = {
-    link: member.fiverrLink || member.fiverr?.link || "https://fiverr.com",
-    status: member.fiverrStatus || member.fiverr?.status || "Top Rated Seller",
+    link: member?.fiverrLink || member?.fiverr?.link || "https://fiverr.com",
+    status: member?.fiverrStatus || member?.fiverr?.status || "Top Rated Seller",
   };
 
   const upwork = {
-    link: member.upworkLink || member.upwork?.link || "https://upwork.com",
-    status: member.upworkStatus || member.upwork?.status || "Top Rated Plus",
+    link: member?.upworkLink || member?.upwork?.link || "https://upwork.com",
+    status: member?.upworkStatus || member?.upwork?.status || "Top Rated Plus",
   };
 
-  const expertise = member.expertise || [
+  const expertise = Array.isArray(member?.expertise) ? member.expertise : [
     "Digital Brand Strategy",
     "Creative Direction",
     "Performance Marketing",
   ];
 
-  const tools = member.tools || ["Adobe Creative Suite", "Figma", "Meta Ads Manager", "Google Analytics"];
+  const tools = Array.isArray(member?.tools) ? member.tools : ["Adobe Creative Suite", "Figma", "Meta Ads Manager", "Google Analytics"];
 
-  const experience = member.experience || [
-    { title: member.role || "Specialist", company: "Scaleminte", period: "2022 - Present" },
+  const experience = Array.isArray(member?.experience) ? member.experience : [
+    { title: memberRole, company: "Scaleminte", period: "2022 - Present" },
   ];
 
-  const education = member.education || [
+  const education = Array.isArray(member?.education) ? member.education : [
     { degree: "B.Sc in Computer Science & Engineering", institution: "Reputed University", year: "2018 - 2022" },
   ];
 
@@ -64,7 +68,7 @@ export default async function TeamMemberPage({ params }: { params: Promise<{ slu
         <div className="pt-40 px-8 pb-12 max-w-7xl mx-auto flex items-center gap-4 text-white/60 text-sm">
           <Link href="/" className="hover:text-white transition-colors">Home</Link>
           <span>/</span>
-          <span className="text-white">{member.name}</span>
+          <span className="text-white">{memberName}</span>
         </div>
       </div>
 
@@ -74,12 +78,12 @@ export default async function TeamMemberPage({ params }: { params: Promise<{ slu
           {/* Left Column: Image & Quick Links */}
           <div className="lg:w-1/3 flex flex-col gap-6">
             <div className="w-full aspect-[4/5] rounded-[2rem] overflow-hidden shadow-xl border border-slate-100 relative group">
-              <img src={member.img || "/images/team1.jpg"} alt={member.name} className="w-full h-full object-cover" />
+              <img src={member?.img || "/images/team1.jpg"} alt={memberName} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#040822] via-transparent to-transparent opacity-40"></div>
             </div>
             
             <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 flex flex-col gap-4">
-              <h4 className="text-slate-900 font-bold mb-2 text-lg">Connect with {member.name.split(" ")[0]}</h4>
+              <h4 className="text-slate-900 font-bold mb-2 text-lg">Connect with {memberFirstName}</h4>
               
               <a href={socials.facebook || "https://facebook.com"} className="flex items-center gap-4 text-slate-600 hover:text-brand-electric transition-colors group" target="_blank" rel="noreferrer">
                 <div className="w-12 h-12 rounded-full bg-white shadow-md flex items-center justify-center text-brand-electric group-hover:scale-110 transition-transform">
@@ -103,7 +107,7 @@ export default async function TeamMemberPage({ params }: { params: Promise<{ slu
                 </div>
                 <div>
                   <p className="text-xs font-bold text-[#1dbf73]/80 uppercase tracking-wide">Fiverr Seller</p>
-                  <p className="font-bold text-lg">{fiverr.status || member.fiverrStatus || "Top Rated Seller"}</p>
+                  <p className="font-bold text-lg">{fiverr.status || "Top Rated Seller"}</p>
                 </div>
               </a>
 
@@ -115,7 +119,7 @@ export default async function TeamMemberPage({ params }: { params: Promise<{ slu
                 </div>
                 <div>
                   <p className="text-xs font-bold text-[#14a800]/80 uppercase tracking-wide">Upwork Freelancer</p>
-                  <p className="font-bold text-lg">{upwork.status || member.upworkStatus || "Top Rated Plus"}</p>
+                  <p className="font-bold text-lg">{upwork.status || "Top Rated Plus"}</p>
                 </div>
               </a>
             </div>
@@ -124,8 +128,8 @@ export default async function TeamMemberPage({ params }: { params: Promise<{ slu
           {/* Right Column: Content */}
           <div className="lg:w-2/3 flex flex-col justify-start">
             <div className="mb-12 border-b border-slate-100 pb-8">
-              <h1 className="text-4xl md:text-5xl font-extrabold text-[#040822] mb-3 tracking-tight">{member.name}</h1>
-              <h2 className="text-xl text-brand-electric font-bold uppercase tracking-widest">{member.role}</h2>
+              <h1 className="text-4xl md:text-5xl font-extrabold text-[#040822] mb-3 tracking-tight">{memberName}</h1>
+              <h2 className="text-xl text-brand-electric font-bold uppercase tracking-widest">{memberRole}</h2>
             </div>
             
             <div className="mb-12">
@@ -136,7 +140,7 @@ export default async function TeamMemberPage({ params }: { params: Promise<{ slu
                 About Me
               </h3>
               <p className="text-slate-600 text-lg leading-relaxed bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                {member.bio || `${member.name} is a dedicated ${member.role} at Scaleminte, helping brands reach their full potential.`}
+                {member?.bio || `${memberName} is a dedicated ${memberRole} at Scaleminte, helping brands reach their full potential.`}
               </p>
             </div>
 
@@ -225,4 +229,3 @@ export default async function TeamMemberPage({ params }: { params: Promise<{ slu
     </main>
   );
 }
-

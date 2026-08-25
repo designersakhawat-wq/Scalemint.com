@@ -83,9 +83,17 @@ export default function Footer() {
     },
     bottomLinks: [
       { id: "fl_b1", label: "Terms and Condition", link: "/terms-and-condition" },
-      { id: "fl_b2", label: "Privacy Policy", link: "/contact-us" },
+      { id: "fl_b2", label: "Privacy Policy", link: "/privacy-policy" },
     ],
   };
+
+  const socialsList = Array.isArray(footer.socials) ? footer.socials : [];
+  const servicesList = Array.isArray(footer.servicesColumn?.links) ? footer.servicesColumn.links : [];
+  const quickLinksList = Array.isArray(footer.quickLinksColumn?.links) ? footer.quickLinksColumn.links : [];
+  const bottomLinksList = Array.isArray(footer.bottomLinks) ? footer.bottomLinks : [
+    { id: "fl_b1", label: "Terms and Condition", link: "/terms-and-condition" },
+    { id: "fl_b2", label: "Privacy Policy", link: "/privacy-policy" },
+  ];
 
   return (
     <footer className="bg-[#020516] text-white pt-24 pb-10 px-8 relative z-50 border-t border-white/5">
@@ -106,17 +114,17 @@ export default function Footer() {
             </p>
             
             <div className="flex flex-wrap gap-4 mt-2">
-              {footer.socials?.map((social) => (
+              {socialsList.map((social) => (
                 <a
-                  key={social.id}
-                  href={social.url || "#"}
+                  key={social?.id || social?.platform}
+                  href={social?.url || "#"}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-10 h-10 rounded-full bg-white/5 hover:bg-brand-electric flex items-center justify-center transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_15px_rgba(27,67,255,0.4)]"
-                  title={social.platform}
+                  title={social?.platform}
                 >
                   <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    {getSocialIcon(social.icon || social.platform)}
+                    {getSocialIcon(social?.icon || social?.platform)}
                   </svg>
                 </a>
               ))}
@@ -129,13 +137,13 @@ export default function Footer() {
               <span className="w-2 h-2 rounded-full bg-brand-electric"></span> {footer.servicesColumn?.title || "Services"}
             </h4>
             <div className="flex flex-col gap-4">
-              {footer.servicesColumn?.links?.map((item) => (
+              {servicesList.map((item) => (
                 <Link 
-                  key={item.id} 
-                  href={item.link} 
+                  key={item?.id || item?.label} 
+                  href={item?.link || "/services/google-ads"} 
                   className="text-slate-400 hover:text-brand-electric transition-colors text-sm font-medium"
                 >
-                  {item.label}
+                  {item?.label}
                 </Link>
               ))}
             </div>
@@ -147,13 +155,13 @@ export default function Footer() {
               <span className="w-2 h-2 rounded-full bg-sky-400"></span> {footer.quickLinksColumn?.title || "Quick Links"}
             </h4>
             <div className="flex flex-col gap-4">
-              {footer.quickLinksColumn?.links?.map((item) => (
+              {quickLinksList.map((item) => (
                 <Link 
-                  key={item.id} 
-                  href={item.link} 
+                  key={item?.id || item?.label} 
+                  href={item?.link || "/"} 
                   className="text-slate-400 hover:text-sky-400 transition-colors text-sm font-medium"
                 >
-                  {item.label}
+                  {item?.label}
                 </Link>
               ))}
             </div>
@@ -203,13 +211,13 @@ export default function Footer() {
             {footer.copyright || settings.footerCopyright || '© 2026 Scaleminte. All rights reserved.'}
           </p>
           <div className="flex flex-wrap gap-8">
-            {footer.bottomLinks?.map((link) => (
+            {bottomLinksList.map((link) => (
               <Link 
-                key={link.id} 
-                href={link.link} 
+                key={link?.id || link?.label} 
+                href={link?.link || "/terms-and-condition"} 
                 className="text-slate-500 hover:text-white text-sm transition-colors font-medium"
               >
-                {link.label}
+                {link?.label}
               </Link>
             ))}
           </div>
