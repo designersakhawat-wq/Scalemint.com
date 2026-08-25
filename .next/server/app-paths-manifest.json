@@ -1,0 +1,16 @@
+{
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/about-us/page": "app/about-us/page.js",
+  "/admin/page": "app/admin/page.js",
+  "/blogs/page": "app/blogs/page.js",
+  "/contact-us/page": "app/contact-us/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/packages/page": "app/packages/page.js",
+  "/page": "app/page.js",
+  "/portfolio/page": "app/portfolio/page.js",
+  "/privacy-policy/page": "app/privacy-policy/page.js",
+  "/services/[slug]/page": "app/services/[slug]/page.js",
+  "/team/[slug]/page": "app/team/[slug]/page.js",
+  "/terms-and-condition/page": "app/terms-and-condition/page.js"
+}

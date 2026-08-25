@@ -1,0 +1,16 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/about-us/page": "/about-us",
+  "/admin/page": "/admin",
+  "/blogs/page": "/blogs",
+  "/contact-us/page": "/contact-us",
+  "/favicon.ico/route": "/favicon.ico",
+  "/packages/page": "/packages",
+  "/page": "/",
+  "/portfolio/page": "/portfolio",
+  "/privacy-policy/page": "/privacy-policy",
+  "/services/[slug]/page": "/services/[slug]",
+  "/team/[slug]/page": "/team/[slug]",
+  "/terms-and-condition/page": "/terms-and-condition"
+}
