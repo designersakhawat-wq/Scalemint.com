@@ -108,8 +108,8 @@ const Icons = {
 export default function AdminDashboardPage() {
   const { settings, updateSettings } = useSiteConfig();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [email, setEmail] = useState("admin@scaleminte.com");
-  const [password, setPassword] = useState("Admin@123456");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
@@ -299,13 +299,32 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     const token = localStorage.getItem("scaleminte_admin_token");
     if (token) {
-      setIsAuthenticated(true);
-      fetchAllData();
+      fetch(`${API_BASE_URL}/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((r) => r.json())
+        .then((res) => {
+          if (res.success) {
+            setIsAuthenticated(true);
+            fetchAllData();
+          } else {
+            localStorage.removeItem("scaleminte_admin_token");
+            setIsAuthenticated(false);
+          }
+        })
+        .catch(() => {
+          localStorage.removeItem("scaleminte_admin_token");
+          setIsAuthenticated(false);
+        });
     }
   }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email.trim() || !password.trim()) {
+      setLoginError("Please enter both email and password.");
+      return;
+    }
     setIsLoggingIn(true);
     setLoginError("");
 
@@ -313,31 +332,19 @@ export default function AdminDashboardPage() {
       const res = await fetch(`${API_BASE_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: email.trim(), password: password.trim() }),
       });
 
       const data = await res.json();
-      if (data.success) {
+      if (data.success && data.data?.accessToken) {
         localStorage.setItem("scaleminte_admin_token", data.data.accessToken);
         setIsAuthenticated(true);
         fetchAllData();
       } else {
-        if (email === "admin@scaleminte.com" && password === "Admin@123456") {
-          localStorage.setItem("scaleminte_admin_token", "demo_token_12345");
-          setIsAuthenticated(true);
-          fetchAllData();
-        } else {
-          setLoginError(data.message || "Invalid credentials.");
-        }
+        setLoginError(data.message || "Invalid email or password.");
       }
     } catch {
-      if (email === "admin@scaleminte.com" && password === "Admin@123456") {
-        localStorage.setItem("scaleminte_admin_token", "demo_token_12345");
-        setIsAuthenticated(true);
-        fetchAllData();
-      } else {
-        setLoginError("Login failed.");
-      }
+      setLoginError("Connection error. Please try again.");
     } finally {
       setIsLoggingIn(false);
     }
@@ -345,6 +352,8 @@ export default function AdminDashboardPage() {
 
   const handleLogout = () => {
     localStorage.removeItem("scaleminte_admin_token");
+    setEmail("");
+    setPassword("");
     setIsAuthenticated(false);
   };
 
@@ -909,30 +918,65 @@ export default function AdminDashboardPage() {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-[#040822] text-white flex items-center justify-center p-4">
-        <div className="w-full max-w-md bg-white/5 border border-white/10 rounded-3xl p-8 shadow-2xl">
-          <h1 className="text-2xl font-bold text-white text-center mb-6">Scaleminte CMS Studio</h1>
-          {loginError && <div className="p-3 bg-rose-500/20 text-rose-300 rounded-xl text-xs mb-4">{loginError}</div>}
-          <form onSubmit={handleLogin} className="space-y-4">
+        <div className="w-full max-w-md bg-[#0a0f2c] border border-white/10 rounded-3xl p-8 shadow-2xl space-y-6">
+          <div className="text-center space-y-2">
+            <div className="w-12 h-12 rounded-2xl bg-brand-electric/20 flex items-center justify-center mx-auto text-brand-electric font-bold text-xl mb-3 shadow-[0_0_20px_rgba(27,67,255,0.3)]">
+              ⚡
+            </div>
+            <h1 className="text-2xl font-bold text-white tracking-tight">Scaleminte CMS Studio</h1>
+            <p className="text-xs text-slate-400">Enter your administrator credentials to manage your website.</p>
+          </div>
+
+          {loginError && (
+            <div className="p-3.5 bg-rose-500/10 border border-rose-500/20 text-rose-300 rounded-2xl text-xs font-medium flex items-center gap-2">
+              <svg className="w-4 h-4 shrink-0 text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>{loginError}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleLogin} className="space-y-4" autoComplete="off">
             <div>
-              <label className="block text-xs uppercase font-semibold text-slate-400 mb-1">Email</label>
+              <label className="block text-xs uppercase font-bold text-slate-300 mb-1.5 tracking-wider">Email Address</label>
               <input
                 type="email"
+                required
+                autoComplete="off"
+                placeholder="admin@scaleminte.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white text-sm"
+                className="w-full px-4 py-3 bg-[#040822] border border-white/15 rounded-xl text-white text-sm placeholder:text-slate-600 focus:outline-none focus:border-brand-electric focus:ring-1 focus:ring-brand-electric transition-all"
               />
             </div>
             <div>
-              <label className="block text-xs uppercase font-semibold text-slate-400 mb-1">Password</label>
+              <label className="block text-xs uppercase font-bold text-slate-300 mb-1.5 tracking-wider">Password</label>
               <input
                 type="password"
+                required
+                autoComplete="off"
+                placeholder="••••••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white text-sm"
+                className="w-full px-4 py-3 bg-[#040822] border border-white/15 rounded-xl text-white text-sm placeholder:text-slate-600 focus:outline-none focus:border-brand-electric focus:ring-1 focus:ring-brand-electric transition-all"
               />
             </div>
-            <button type="submit" className="w-full py-3 bg-brand-electric text-white font-bold rounded-xl text-sm cursor-pointer">
-              {isLoggingIn ? "Logging in..." : "Enter CMS Studio"}
+            <button 
+              type="submit" 
+              disabled={isLoggingIn}
+              className="w-full py-3.5 bg-brand-electric hover:bg-blue-600 text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-brand-electric/30 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed mt-2 flex items-center justify-center gap-2"
+            >
+              {isLoggingIn ? (
+                <>
+                  <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                  </svg>
+                  <span>Verifying Credentials...</span>
+                </>
+              ) : (
+                "Log In to Dashboard"
+              )}
             </button>
           </form>
         </div>
