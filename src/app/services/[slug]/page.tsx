@@ -479,3 +479,17 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
     </main>
   );
 }
+
+export function generateStaticParams() {
+  return [
+    { slug: "google-ads" },
+    { slug: "meta-ads" },
+    { slug: "social-media-management" },
+    { slug: "video-editing" },
+    { slug: "graphic-design" },
+    { slug: "web-development" },
+    { slug: "seo-optimization" },
+    { slug: "email-marketing" },
+  ];
+}
+

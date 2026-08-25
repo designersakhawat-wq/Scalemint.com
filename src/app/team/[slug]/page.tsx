@@ -225,3 +225,13 @@ export default async function TeamMemberPage({ params }: { params: Promise<{ slu
     </main>
   );
 }
+
+export function generateStaticParams() {
+  return [
+    { slug: "sakhawat-hossain" },
+    { slug: "ferdus-hasan" },
+    { slug: "tania-akter" },
+    { slug: "arif-hossain" },
+  ];
+}
+
