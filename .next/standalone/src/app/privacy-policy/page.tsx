@@ -24,14 +24,14 @@ export default function PrivacyPolicyPage() {
       <Navbar />
       
       <div className="pt-40 pb-32 px-8 max-w-4xl mx-auto">
-        <h1 data-aos="fade-up" className="text-4xl md:text-6xl font-bold text-white mb-4">
+        <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
           {title}
         </h1>
-        <p data-aos="fade-up" data-aos-delay="100" className="text-white/60 mb-12">
+        <p className="text-white/60 mb-12">
           Last Updated: {lastUpdated}
         </p>
         
-        <div data-aos="fade-up" data-aos-delay="200" className="space-y-6">
+        <div className="space-y-6">
           {paragraphs.map((p, idx) => {
             const lines = p.split("\n");
             if (lines.length > 1 && /^\d+\./.test(lines[0])) {

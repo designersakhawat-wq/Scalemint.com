@@ -5,9 +5,9 @@ export default function ClientLogoStrip() {
   return (
     <div className="bg-[#040822] py-20 px-4 relative z-10">
       <div className="max-w-7xl mx-auto flex flex-col items-center">
-        <h3 data-aos="fade-up" className="text-2xl font-bold text-white mb-12 text-center tracking-wide">Trusted by 250+ Global Brands</h3>
+        <h3 className="text-2xl font-bold text-white mb-12 text-center tracking-wide">Trusted by 250+ Global Brands</h3>
         
-        <div data-aos="fade-in" data-aos-delay="200" className="relative w-full overflow-hidden flex flex-col gap-10 opacity-80 mask-image-gradient">
+        <div className="relative w-full overflow-hidden flex flex-col gap-10 opacity-80 mask-image-gradient">
           {/* Fade overlays for smooth marquee edges */}
           <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#040822] to-transparent z-10 pointer-events-none"></div>
           <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#040822] to-transparent z-10 pointer-events-none"></div>

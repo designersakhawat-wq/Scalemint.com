@@ -42,7 +42,7 @@ function StatCard({ stat, delay }: { stat: any; delay: number }) {
   const { count, ref } = useCountUp(parseInt(stat.number), 2500);
 
   return (
-    <div ref={ref} data-aos="fade-up" data-aos-delay={delay} className="flex flex-col">
+    <div ref={ref} className="flex flex-col">
       <div className="flex items-baseline gap-1 mb-4">
         <h3 className="text-5xl md:text-6xl font-bold text-white tracking-tight">{count}</h3>
         <span className="text-3xl font-semibold text-brand-electric">{stat.suffix}</span>

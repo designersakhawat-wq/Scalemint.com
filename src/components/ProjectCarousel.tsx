@@ -40,7 +40,7 @@ export default function ProjectCarousel() {
   };
 
   return (
-    <div data-aos="fade-up" data-aos-delay="600" className="relative -mt-24 z-20 w-full overflow-hidden pb-16 group mask-image-gradient">
+    <div className="relative -mt-24 z-20 w-full overflow-hidden pb-16 group mask-image-gradient">
       {/* Fade overlays for smooth marquee edges */}
       <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#040822] to-transparent z-30 pointer-events-none"></div>
       <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#040822] to-transparent z-30 pointer-events-none"></div>

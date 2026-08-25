@@ -62,8 +62,8 @@ export default function PackagesPage() {
       <div className="bg-[#040822] pb-32">
         <Navbar />
         <div className="pt-40 px-8 max-w-4xl mx-auto text-center">
-          <h1 data-aos="fade-up" className="text-white text-5xl md:text-6xl font-bold mb-6">Our Pricing Packages</h1>
-          <p data-aos="fade-up" data-aos-delay="100" className="text-white/80 text-xl max-w-2xl mx-auto">
+          <h1 className="text-white text-5xl md:text-6xl font-bold mb-6">Our Pricing Packages</h1>
+          <p className="text-white/80 text-xl max-w-2xl mx-auto">
             Transparent, ROI-focused solutions designed to scale your business smoothly at every growth stage.
           </p>
         </div>
@@ -84,8 +84,6 @@ export default function PackagesPage() {
               return (
                 <div 
                   key={pkg?.id || idx} 
-                  data-aos="fade-up" 
-                  data-aos-delay={idx * 100}
                   className={`bg-[#0a0f2c] border rounded-[2.5rem] p-10 flex flex-col relative transition-all duration-300 ${
                     pkg?.isPopular ? 'border-brand-electric shadow-[0_0_50px_rgba(27,67,255,0.25)] -translate-y-2' : 'border-white/10 hover:border-white/20'
                   }`}

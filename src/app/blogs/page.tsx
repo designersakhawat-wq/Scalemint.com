@@ -63,8 +63,8 @@ export default function BlogsPage() {
       <div className="bg-[#040822] pb-32">
         <Navbar />
         <div className="pt-40 px-8 max-w-4xl mx-auto text-center">
-          <h1 data-aos="fade-up" className="text-white text-5xl md:text-6xl font-bold mb-6">Our Blog & Insights</h1>
-          <p data-aos="fade-up" data-aos-delay="100" className="text-white/80 text-xl max-w-2xl mx-auto">
+          <h1 className="text-white text-5xl md:text-6xl font-bold mb-6">Our Blog & Insights</h1>
+          <p className="text-white/80 text-xl max-w-2xl mx-auto">
             Thoughts, tips, and strategies on design, digital marketing, and business growth.
           </p>
         </div>
@@ -87,8 +87,6 @@ export default function BlogsPage() {
               return (
                 <div 
                   key={blog?.id || idx} 
-                  data-aos="fade-up" 
-                  data-aos-delay={idx * 100} 
                   className="bg-[#0a0f2c] border border-white/10 rounded-[2rem] overflow-hidden shadow-[0_0_30px_rgba(48,255,151,0.05)] flex flex-col group hover:-translate-y-2 hover:shadow-[0_0_40px_rgba(48,255,151,0.15)] hover:border-brand-electric/30 transition-all duration-300"
                 >
                   <div className="w-full h-72 overflow-hidden relative cursor-pointer" onClick={() => setSelectedArticle(blog)}>

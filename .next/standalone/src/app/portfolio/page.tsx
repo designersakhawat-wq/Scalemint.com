@@ -60,8 +60,8 @@ export default function PortfolioPage() {
       <div className="bg-[#040822] pb-32">
         <Navbar />
         <div className="pt-40 px-8 max-w-4xl mx-auto text-center">
-          <h1 data-aos="fade-up" className="text-white text-5xl md:text-6xl font-bold mb-6">Our Portfolio</h1>
-          <p data-aos="fade-up" data-aos-delay="100" className="text-white/80 text-xl max-w-2xl mx-auto">
+          <h1 className="text-white text-5xl md:text-6xl font-bold mb-6">Our Portfolio</h1>
+          <p className="text-white/80 text-xl max-w-2xl mx-auto">
             A showcase of our best work. We build brands that drive real, measurable growth.
           </p>
         </div>
@@ -83,8 +83,6 @@ export default function PortfolioPage() {
               return (
                 <div 
                   key={project?.id || idx} 
-                  data-aos="fade-up" 
-                  data-aos-delay={idx * 100} 
                   onClick={() => setSelectedProject(project)}
                   className="bg-[#0a0f2c] border border-white/10 rounded-[2rem] overflow-hidden shadow-[0_0_30px_rgba(48,255,151,0.05)] group hover:-translate-y-2 hover:shadow-[0_0_40px_rgba(48,255,151,0.15)] hover:border-brand-electric/30 transition-all duration-300 cursor-pointer"
                 >

@@ -274,7 +274,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
         <div className="max-w-7xl mx-auto px-8 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mt-12">
           
           {/* Left Column: Text Content */}
-          <div data-aos="fade-right" className="flex flex-col items-start">
+          <div className="flex flex-col items-start">
             {/* Breadcrumbs */}
             <div className="flex items-center gap-3 text-white/50 text-sm font-medium mb-8 tracking-wide uppercase">
               <Link href="/" className="hover:text-white transition-colors">Home</Link>
@@ -302,7 +302,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
           </div>
 
           {/* Right Column: Floating Mockup Image */}
-          <div data-aos="fade-left" data-aos-delay="200" className="w-full relative mt-12 lg:mt-0 flex justify-center">
+          <div className="w-full relative mt-12 lg:mt-0 flex justify-center">
             <div className="relative group w-[110%] max-w-2xl transform transition-transform duration-700 hover:scale-105 hover:-translate-y-4">
               <img src={service.img || "/images/mockup-ui.png"} alt={`${service.title} Mockup`} className="w-full h-auto object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]" />
             </div>
@@ -363,7 +363,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
           
           {/* Left Column */}
-          <div data-aos="fade-up" className="lg:col-span-5 flex flex-col items-start">
+          <div className="lg:col-span-5 flex flex-col items-start">
             <div className="sticky top-32">
               <span className="text-brand-electric font-bold tracking-widest uppercase text-sm mb-4 block">The Process</span>
               <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight mb-6">
@@ -385,11 +385,11 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 
           {/* Right Column: Features */}
           <div className="lg:col-span-7">
-            <h3 data-aos="fade-left" className="text-3xl font-bold text-white mb-12 border-b border-white/10 pb-6">What&apos;s Included in {service.title}</h3>
+            <h3 className="text-3xl font-bold text-white mb-12 border-b border-white/10 pb-6">What&apos;s Included in {service.title}</h3>
             
             <div className="flex flex-col gap-8">
               {features.map((feature: any, idx: number) => (
-                <div key={idx} data-aos="fade-left" data-aos-delay={idx * 150} className="flex gap-6 group">
+                <div key={idx} className="flex gap-6 group">
                   <div className="shrink-0 w-16 h-16 rounded-2xl bg-[#0a0f2c] border border-white/10 flex items-center justify-center text-2xl font-bold text-slate-500 group-hover:bg-brand-electric group-hover:text-white group-hover:border-brand-electric transition-all duration-300">
                     0{idx + 1}
                   </div>

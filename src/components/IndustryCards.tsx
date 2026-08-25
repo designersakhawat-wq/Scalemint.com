@@ -32,7 +32,7 @@ export default function IndustryCards() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         
         {/* Startup Card */}
-        <div data-aos="fade-up" className="bg-[#0a0f2c] border border-white/10 rounded-[2.5rem] p-6 md:p-10 flex flex-col hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(48,255,151,0.1)] hover:border-brand-electric/30 transition-all duration-300 group">
+        <div className="bg-[#0a0f2c] border border-white/10 rounded-[2.5rem] p-6 md:p-10 flex flex-col hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(48,255,151,0.1)] hover:border-brand-electric/30 transition-all duration-300 group">
           {renderCardImage(cardImages.startup?.url || "/images/startup.jpg", "Startups")}
           <h3 className="text-2xl font-bold mb-4 text-white">Startups</h3>
           <p className="text-slate-400 mb-8 flex-grow leading-relaxed">
@@ -44,7 +44,7 @@ export default function IndustryCards() {
         </div>
 
         {/* Small Business */}
-        <div data-aos="fade-up" data-aos-delay="150" className="bg-[#0a0f2c] border border-white/10 rounded-[2.5rem] p-6 md:p-10 flex flex-col hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(48,255,151,0.1)] hover:border-brand-electric/30 transition-all duration-300 group">
+        <div className="bg-[#0a0f2c] border border-white/10 rounded-[2.5rem] p-6 md:p-10 flex flex-col hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(48,255,151,0.1)] hover:border-brand-electric/30 transition-all duration-300 group">
           {renderCardImage(cardImages.smallBusiness?.url || "/images/storefront.jpg", "Small Business")}
           <h3 className="text-2xl font-bold mb-4 text-white">Small Business</h3>
           <p className="text-slate-400 mb-8 flex-grow leading-relaxed">
@@ -56,7 +56,7 @@ export default function IndustryCards() {
         </div>
 
         {/* E-commerce */}
-        <div data-aos="fade-up" className="bg-[#0a0f2c] border border-white/10 rounded-[2.5rem] p-6 md:p-10 flex flex-col hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(48,255,151,0.1)] hover:border-brand-electric/30 transition-all duration-300 group">
+        <div className="bg-[#0a0f2c] border border-white/10 rounded-[2.5rem] p-6 md:p-10 flex flex-col hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(48,255,151,0.1)] hover:border-brand-electric/30 transition-all duration-300 group">
           {renderCardImage(cardImages.ecommerce?.url || "/images/ecommerce.jpg", "E-commerce")}
           <h3 className="text-2xl font-bold mb-4 text-white">E-commerce</h3>
           <p className="text-slate-400 mb-8 flex-grow leading-relaxed">
@@ -68,7 +68,7 @@ export default function IndustryCards() {
         </div>
 
         {/* Local Business */}
-        <div data-aos="fade-up" data-aos-delay="150" className="bg-[#0a0f2c] border border-white/10 rounded-[2.5rem] p-6 md:p-10 flex flex-col hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(48,255,151,0.1)] hover:border-brand-electric/30 transition-all duration-300 group">
+        <div className="bg-[#0a0f2c] border border-white/10 rounded-[2.5rem] p-6 md:p-10 flex flex-col hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(48,255,151,0.1)] hover:border-brand-electric/30 transition-all duration-300 group">
           {renderCardImage(cardImages.localBusiness?.url || "/images/storefront.jpg", "Local Business")}
           <h3 className="text-2xl font-bold mb-4 text-white">Local Business</h3>
           <p className="text-slate-400 mb-8 flex-grow leading-relaxed">
@@ -82,7 +82,7 @@ export default function IndustryCards() {
       </div>
 
       {/* Corporate / Enterprise Card */}
-      <div data-aos="fade-up" className="mt-6 bg-[#0a0f2c] border border-white/10 rounded-[2.5rem] p-6 md:p-10 flex flex-col md:flex-row gap-8 items-center hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(48,255,151,0.1)] hover:border-brand-electric/30 transition-all duration-300 group">
+      <div className="mt-6 bg-[#0a0f2c] border border-white/10 rounded-[2.5rem] p-6 md:p-10 flex flex-col md:flex-row gap-8 items-center hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(48,255,151,0.1)] hover:border-brand-electric/30 transition-all duration-300 group">
         <div className="w-full md:w-1/2 aspect-video md:aspect-auto md:h-80 rounded-3xl overflow-hidden relative bg-slate-900">
           <img
             src={cardImages.corporate?.url || "/images/corporate.jpg"}

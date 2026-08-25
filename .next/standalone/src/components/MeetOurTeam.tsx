@@ -73,7 +73,7 @@ export default function MeetOurTeam() {
   return (
     <section className="bg-[#040822] py-24 px-4 relative z-0 border-t border-white/5">
       <div className="max-w-7xl mx-auto">
-        <div data-aos="fade-up" className="text-center mb-20">
+        <div className="text-center mb-20">
           <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">
             Meet Our <span className="text-white bg-brand-electric px-4 py-1 rounded-xl inline-block shadow-[0_0_20px_rgba(27,67,255,0.4)]">Team</span>
           </h2>
@@ -95,8 +95,6 @@ export default function MeetOurTeam() {
                 <Link
                   href={`/team/${slug}`}
                   key={member.id || idx}
-                  data-aos="fade-up"
-                  data-aos-delay={idx * 150}
                   className="bg-[#0a0f2c] border border-white/10 rounded-[2rem] p-3 pb-8 flex flex-col items-center group hover:shadow-[0_0_30px_rgba(48,255,151,0.15)] hover:border-brand-electric/30 transition-all relative overflow-hidden block"
                 >
                   <div className="w-full aspect-[4/5] rounded-3xl overflow-hidden mb-6 relative">

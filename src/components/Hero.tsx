@@ -13,7 +13,7 @@ export default function Hero() {
     <section className="relative pt-32 pb-48 px-4 overflow-hidden bg-brand-navy hero-pattern flex flex-col items-center justify-center text-center">
       
       <div className="flex flex-col items-center mt-12 z-10">
-        <div data-aos="fade-down" className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-8">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-8">
           <div className="w-4 h-4 rounded-full bg-brand-electric flex items-center justify-center">
             <svg viewBox="0 0 24 24" fill="none" className="w-3 h-3 text-white">
               <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -22,7 +22,7 @@ export default function Hero() {
           <span className="text-white/90 text-sm font-medium">{siteName} • Creative Support Agency</span>
         </div>
 
-        <h1 data-aos="zoom-in" data-aos-delay="200" className="text-white text-5xl md:text-7xl font-bold max-w-4xl leading-tight tracking-tight mb-8">
+        <h1 className="text-white text-5xl md:text-7xl font-bold max-w-4xl leading-tight tracking-tight mb-8">
           {tagline ? (
             tagline
           ) : (
@@ -33,7 +33,7 @@ export default function Hero() {
           )}
         </h1>
 
-        <div data-aos="fade-up" data-aos-delay="400" className="flex items-center gap-4 mb-10">
+        <div className="flex items-center gap-4 mb-10">
           <div className="flex -space-x-3">
             {[1,2,3,4,5].map((i) => (
               <div key={i} className="w-10 h-10 rounded-full bg-slate-300 border-2 border-brand-navy overflow-hidden shrink-0">
@@ -57,7 +57,7 @@ export default function Hero() {
           </div>
         </div>
 
-        <div data-aos="fade-up" data-aos-delay="500" className="flex flex-wrap items-center justify-center gap-4">
+        <div className="flex flex-wrap items-center justify-center gap-4">
           <Button href="/contact-us" variant="primary" className="text-base px-8 py-4">
             Get in Touch!
           </Button>
